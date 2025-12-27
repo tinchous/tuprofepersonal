@@ -110,61 +110,7 @@
     .faqbox p,.faqbox li{color:var(--muted);font-size:13px;line-height:1.4;margin:0}
     .faqbox ul{margin:8px 0 0 18px;padding:0}
     .faqbox b{color:var(--text)}
-  /* ====== PEO: estilos cuponeras (Onit patch) ====== */
-
-/* APOYO: borde azul (suave, prolijo) */
-.plan.apoyo{
-  border: 2px solid rgba(21,198,255,.85) !important;
-  box-shadow: 0 18px 80px rgba(21,198,255,.10);
-  background: rgba(21,198,255,.05);
-}
-
-/* EN EL HORNO: borde rojo (alerta pero lindo) */
-.plan.horno{
-  border: 2px solid rgba(255,80,80,.85) !important;
-  box-shadow: 0 18px 80px rgba(255,80,80,.12);
-  background: rgba(255,80,80,.04);
-}
-
-/* PREPARA TU EXAMEN: borde neón multicolor + más destaque */
-.plan.neon{
-  border: 2px solid transparent !important;
-  background:
-    linear-gradient(rgba(0,0,0,.18), rgba(0,0,0,.18)) padding-box,
-    linear-gradient(135deg,
-      rgba(21,198,255,.95),
-      rgba(255,0,214,.85),
-      rgba(255,176,0,.95),
-      rgba(124,58,237,.85),
-      rgba(21,198,255,.95)
-    ) border-box !important;
-
-  box-shadow:
-    0 22px 120px rgba(21,198,255,.10),
-    0 22px 120px rgba(255,0,214,.08),
-    0 22px 120px rgba(255,176,0,.08);
-
-  transform: translateY(-2px);
-}
-
-.plan.neon .tag{
-  border-color: rgba(255,255,255,.22);
-  background: rgba(0,0,0,.20);
-}
-
-/* “Cupos limitados” con vibe de urgencia sin ser grasa */
-.plan.neon .small b{
-  color: rgba(255,255,255,.95);
-  text-shadow: 0 0 18px rgba(255,176,0,.28);
-}
-
-/* Si querés que PREPARA grite un poquito más */
-@media (min-width: 920px){
-  .plan.neon{ transform: translateY(-4px) scale(1.01); }
-}
-
-/* ====== fin patch ====== */
-</style>
+  </style>
 </head>
 <body>
   <div class="wrap">
@@ -242,7 +188,8 @@
       </div>
 
       <div class="plans">
-        <div class="plan apoyo"><div class="tag">🟦 APOYO</div>
+        <div class="plan">
+          <div class="tag">🟦 APOYO</div>
           <div class="name">8 clases</div>
           <div class="price">UYU 3.800</div>
           <div class="small">Ideal para apoyo de tu curso mes a mes.</div>
@@ -257,18 +204,19 @@
           <div class="buy"><a class="btn buybtn accent" data-plan="NO ENTIENDO (12 clases) - UYU 5.400" href="#" target="_blank" rel="noopener">⭐ ¡La quiero!</a></div>
         </div>
 
-        <div class="plan horno"><div class="tag">🔥 EN EL HORNO</div>
+        <div class="plan">
+          <div class="tag">🔥 EN EL HORNO</div>
           <div class="name">15 clases</div>
           <div class="price">UYU 6.375</div>
           <div class="small">Si sentís que estás “en el horno”, esta es tu cuponera.</div>
           <div class="buy"><a class="btn buybtn" data-plan="EN EL HORNO (15 clases) - UYU 6.375" href="#" target="_blank" rel="noopener">🟩 Comprar por WhatsApp</a></div>
         </div>
 
-        <div class="plan exam neon">
+        <div class="plan exam">
           <div class="tag">🎓 PREPARA TU EXAMEN</div>
           <div class="name">12 clases • Febrero 2026</div>
           <div class="price">UYU 4.800</div>
-          <div class="small"><b>⏳ Cupos limitados</b><br/><b>Solo</b> para exámenes de Febrero 2026. Para llegar seguro y aprobar sí o sí.</div>
+          <div class="small"><b>Solo</b> para exámenes de Febrero 2026. Para llegar seguro y aprobar sí o sí.</div>
           <div class="buy"><a class="btn buybtn primary" data-plan="PREPARA TU EXAMEN (12 clases Feb/2026) - UYU 4.800" href="#" target="_blank" rel="noopener">🎯 Quiero preparar el examen</a></div>
         </div>
       </div>
@@ -385,4 +333,3 @@
   </script>
 </body>
 </html>
-
