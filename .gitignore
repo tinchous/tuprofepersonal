@@ -1,0 +1,2 @@
+if (!(Test-Path .\.gitignore)) { New-Item .\.gitignore | Out-Null }
+Add-Content .\.gitignore "`nnode_modules/`n.DS_Store`n.env`n"
