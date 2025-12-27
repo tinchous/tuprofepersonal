@@ -1,4 +1,61 @@
-﻿<!doctype html>
+# ================================
+# ONIT_BUILD_PEO.ps1
+# Construye/actualiza la landing + docs + estructura base PEO
+# Autor: Onit (para Tino)
+# ================================
+
+$ErrorActionPreference = "Stop"
+
+function Write-Title($t) {
+  Write-Host ""
+  Write-Host "===============================" -ForegroundColor Cyan
+  Write-Host $t -ForegroundColor Cyan
+  Write-Host "===============================" -ForegroundColor Cyan
+}
+
+function Assert-Path($p, $msg) {
+  if (!(Test-Path $p)) { throw $msg }
+}
+
+Write-Title "PEO Builder - ElProfeTino"
+
+# --- Verificar que estamos en un repo con carpeta public ---
+Assert-Path ".\public" "No encuentro .\public. Ejecutá este script en la raíz del repo."
+Assert-Path ".\public\assets" "No encuentro .\public\assets. Verificá tu estructura."
+
+# --- Verificar assets básicos ---
+$need = @(
+  ".\public\assets\logo_EPT.png",
+  ".\public\assets\portada_EPT.png",
+  ".\public\assets\EPT_explosivo.mp4"
+)
+foreach ($f in $need) {
+  Assert-Path $f "Falta el asset requerido: $f"
+}
+
+# --- Backup del index actual ---
+$indexPath = ".\public\index.html"
+if (Test-Path $indexPath) {
+  $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+  $backup = ".\public\index.backup-$stamp.html"
+  Copy-Item -Force $indexPath $backup
+  Write-Host "✅ Backup creado: $backup" -ForegroundColor Green
+} else {
+  Write-Host "ℹ️ No existía public\index.html, lo vamos a crear." -ForegroundColor Yellow
+}
+
+# --- Configuración ---
+$WHATSAPP_NUMBER = "59898175225"   # sin +
+$PRIMARY_DOMAIN  = "https://www.tuplataformaeducativa.online"
+
+# --- HTML completo (landing) ---
+# Notas:
+# - Rutas ABSOLUTAS: /assets/... (más robusto en Vercel)
+# - Botón flotante abre modal FAQ (no WhatsApp)
+# - Cuponeras 2026 + cuponera especial Prepara Tu Examen
+# - WhatsApp en botones de compra con mensaje pre-armado
+$html = @"
+<!doctype html>
 <html lang="es-UY">
 <head>
   <meta charset="utf-8" />
@@ -12,7 +69,7 @@
   <meta property="og:title" content="ElProfeTino | Aprender es Entender" />
   <meta property="og:description" content="Clases presenciales, individuales y personalizadas de Matemática y Física (7º a 9º y Bachillerato). Cuponeras 2026 y plan especial Prepara Tu Examen." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.tuplataformaeducativa.online/" />
+  <meta property="og:url" content="$PRIMARY_DOMAIN/" />
   <meta property="og:image" content="/assets/portada_EPT.png" />
 
   <!-- Favicon (usamos el logo) -->
@@ -759,11 +816,11 @@
     // ============================
     // CONFIG
     // ============================
-    const WHATSAPP_NUMBER = "59898175225";
+    const WHATSAPP_NUMBER = "$WHATSAPP_NUMBER";
 
     function waLink(message){
       const txt = encodeURIComponent(message);
-      return https://wa.me/59898175225?text=;
+      return `https://wa.me/${WHATSAPP_NUMBER}?text=${txt}`;
     }
 
     // Footer year
@@ -778,7 +835,7 @@
     // Botones de compra por WhatsApp (cuponeras)
     document.querySelectorAll("[data-plan]").forEach(a => {
       const plan = a.getAttribute("data-plan");
-      const msg = Hola ElProfeTino, quiero la cuponera: . ¿Cómo coordinamos horarios?;
+      const msg = `Hola ElProfeTino, quiero la cuponera: ${plan}. ¿Cómo coordinamos horarios?`;
       a.href = waLink(msg);
     });
 
@@ -839,3 +896,143 @@
   </script>
 </body>
 </html>
+"@
+
+# --- Escribir index.html ---
+Set-Content -Path $indexPath -Value $html -Encoding UTF8
+Write-Host "✅ public\index.html actualizado" -ForegroundColor Green
+
+# --- Crear docs (Paso 2, 3, 4) ---
+Write-Title "Creando docs + estructura base PEO"
+
+New-Item -ItemType Directory -Force ".\docs" | Out-Null
+New-Item -ItemType Directory -Force ".\apps" | Out-Null
+New-Item -ItemType Directory -Force ".\apps\tizaia" | Out-Null
+New-Item -ItemType Directory -Force ".\apps\genera-tus-ejercicios" | Out-Null
+New-Item -ItemType Directory -Force ".\apps\tu-examen-personal" | Out-Null
+New-Item -ItemType Directory -Force ".\shared" | Out-Null
+
+# Paso 2: Prompt base TizaIA
+$promptMd = @"
+# TizaIA — Prompt base (estilo ElProfeTino)
+
+## Objetivo
+Ayudar al estudiante a **entender** Matemática/Física (7º a 9º y Bachillerato) sin memorizar vacío.
+Prioridad: **comprensión + aplicación + confianza**.
+
+## Principios
+1. **No dar la respuesta final sin proceso**. Primero guiar: preguntas cortas, pasos claros.
+2. **Lenguaje simple**. Evitar jerga. Si hay jerga, explicarla.
+3. **Conectar con la realidad**: fútbol, movimiento, fuerza, trayectorias, vida cotidiana.
+4. **Validar la duda** sin juzgar. “No entender” es normal.
+5. **Detectar nivel** con 1–2 preguntas (“¿qué curso sos?” / “¿qué parte se te tranca?”).
+6. **Estructura**: resumen → paso a paso → ejemplo → mini práctica → chequeo final.
+7. **Accesibilidad**: frases cortas, listas, emojis moderados, sin paredes de texto.
+
+## Formato recomendado de respuesta
+- **Título**
+- **Idea clave (1–2 líneas)**
+- **Paso a paso**
+- **Ejemplo real**
+- **Mini práctica (1 ejercicio)**
+- **Chequeo**: “¿Te quedó claro? ¿Querés que lo hagamos con un ejemplo tuyo?”
+
+## Reglas anti-trampa (alineación educativa)
+- No hacer “tarea lista” sin explicar.
+- Si el usuario pide “solo resultado”: dar resultado **pero** con explicación mínima obligatoria.
+- Promover razonamiento y verificación.
+
+## Plantilla de inicio (saludo corto)
+“Dale, lo vemos juntos. Decime: ¿qué curso sos y en qué parte exacta te trabaste?”
+
+"@
+Set-Content ".\docs\tizaia-prompt-base.md" $promptMd -Encoding UTF8
+
+# Paso 3: Arquitectura PEO (borrador técnico)
+$archMd = @"
+# PEO — Arquitectura (borrador 2026 → 2027)
+
+## Objetivo 2026
+Sistema educativo práctico para clases presenciales con 3 módulos:
+1) TizaIA (dudas + explicación)
+2) GeneraTusEjercicios (práctica adaptada)
+3) TuExamenPersonal (simulacros)
+
+## Objetivo 2027
+Alineación institucional (ANEP / Plan Ceibal): IA como apoyo al aprendizaje, no sustituto.
+- Transparencia, explicabilidad, supervisión docente
+- Enfoque en razonamiento y competencias
+
+## Estructura propuesta (monorepo simple)
+/public                -> landing estática
+/apps
+  /tizaia              -> app chat (UI + reglas + logging educativo)
+  /genera-tus-ejercicios -> generador de práctica (por tema/nivel)
+  /tu-examen-personal  -> simulador (tiempo + corrección)
+/shared
+  /content             -> contenidos/temarios por curso (ANEP)
+  /rules               -> políticas IA responsable
+  /ui                  -> componentes reutilizables
+/docs
+  prompt base, manifiesto, decisiones
+
+## Decisiones clave
+- Mobile-first
+- Accesibilidad: contraste, tamaños, teclado, lectores
+- Telemetría educativa ética (sin invadir): mejoras del sistema
+
+## Próximo entregable técnico
+- Definir stack (Next.js o Vite) para apps, manteniendo landing estática aparte.
+- Definir “perfil alumno” (curso, objetivo, ritmo).
+"@
+Set-Content ".\docs\arquitectura-peo.md" $archMd -Encoding UTF8
+
+# Paso 4: Manifiesto (marca + pedagogía)
+$manifMd = @"
+# Manifiesto ElProfeTino — Aprender es Entender
+
+En esta plataforma no venimos a memorizar fórmulas como loros.
+Venimos a entender qué significan, cuándo se usan y por qué funcionan.
+
+## 1) Entender antes que repetir
+Si el alumno entiende, puede aplicar. Si repite sin entender, se tranca cuando cambia el problema.
+
+## 2) Ciencia pegada a la realidad
+El mundo ya es Matemática y Física: una pelota, una parábola, un rebote, una fuerza, una aceleración.
+La teoría se aprende cuando se conecta con lo cotidiano.
+
+## 3) Acompañamiento humano + herramientas inteligentes
+La IA no reemplaza al profe. Potencia el aprendizaje:
+- explica
+- propone práctica
+- simula evaluación
+Pero el centro es el estudiante entendiendo.
+
+## 4) Inclusión real
+Aprender tiene que ser posible para todos:
+- lenguaje claro
+- ritmo personal
+- accesibilidad tecnológica
+- respeto y paciencia
+No hay vergüenza en preguntar.
+
+## 5) Responsabilidad educativa
+La IA se usa para aprender, no para “zafar”.
+La meta es formar pensamiento crítico, no copiar resultados.
+
+Aprender es Entender.
+Y entender es libertad.
+"@
+Set-Content ".\docs\manifiesto-elprofetino.md" $manifMd -Encoding UTF8
+
+# Readmes mínimos
+Set-Content ".\apps\tizaia\README.md" "# App TizaIA (placeholder)`n" -Encoding UTF8
+Set-Content ".\apps\genera-tus-ejercicios\README.md" "# App GeneraTusEjercicios (placeholder)`n" -Encoding UTF8
+Set-Content ".\apps\tu-examen-personal\README.md" "# App TuExamenPersonal (placeholder)`n" -Encoding UTF8
+Set-Content ".\shared\README.md" "# Shared (contenido, reglas, UI)`n" -Encoding UTF8
+
+Write-Host "✅ Docs + estructura creada" -ForegroundColor Green
+
+Write-Title "Listo"
+Write-Host "👉 Revisá la landing en local:  cd public ; python -m http.server 8000" -ForegroundColor Yellow
+Write-Host "👉 Luego commit/push a GitHub y Vercel deploya solo." -ForegroundColor Yellow

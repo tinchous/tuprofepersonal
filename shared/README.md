@@ -1,0 +1,2 @@
+﻿# Shared (contenido, reglas, UI)
+

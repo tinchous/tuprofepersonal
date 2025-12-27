@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="es-UY">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- =========================================================
+       SEO básico
+       ========================================================= -->
+  <title>ElProfeTino | Clases particulares Matemática y Física</title>
+  <meta name="description" content="Clases particulares presenciales de Matemática y Física (7º a 9º y Bachillerato). Aprender es Entender. Agenda habilitada desde 07/01/2026." />
+
+  <!-- =========================================================
+       Open Graph (vista previa al compartir)
+       IMPORTANTE:
+       - Como index.html está dentro de /public, usamos ./assets/...
+       - Si más adelante lo servís desde raíz, podés cambiar a /assets/...
+       ========================================================= -->
+  <meta property="og:title" content="ElProfeTino | Aprender es Entender" />
+  <meta property="og:description" content="Clases particulares presenciales de Matemática y Física (7º a 9º y Bachillerato). Agenda desde 07/01/2026." />
+  <meta property="og:image" content="/assets/portada_EPT.png" />
+  <meta property="og:type" content="website" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/logo_EPT.png" />
+
+  <style>
+    /* =========================================================
+       Variables de estilo
+       ========================================================= */
+    :root{
+      --bg0:#070b18;
+      --bg1:#0b1230;
+      --card:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.72);
+      --brand:#15c6ff;   /* azul "Tino" */
+      --accent:#ffb000;
+      --ok:#34d399;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+      --max: 1100px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(21,198,255,.22), transparent 55%),
+        radial-gradient(900px 500px at 80% 20%, rgba(255,176,0,.18), transparent 55%),
+        radial-gradient(900px 700px at 50% 100%, rgba(124,58,237,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    /* Estrellitas suaves */
+    body:before{
+      content:"";
+      position:fixed; inset:0;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.35) 50%, transparent 52%),
+        radial-gradient(2px 2px at 70% 30%, rgba(255,255,255,.25) 50%, transparent 52%),
+        radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,.18) 50%, transparent 52%),
+        radial-gradient(1px 1px at 85% 75%, rgba(255,255,255,.14) 50%, transparent 52%),
+        radial-gradient(2px 2px at 25% 80%, rgba(255,255,255,.22) 50%, transparent 52%);
+      opacity:.45;
+      pointer-events:none;
+      filter: blur(.2px);
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 22px 18px 90px;
+      position:relative;
+      z-index:1;
+    }
+
+    /* =========================================================
+       Header
+       ========================================================= */
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding: 10px 0 18px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 0;
+    }
+
+    /* Logo visible y con “marco” */
+    .brand img.logo{
+      width:52px;
+      height:52px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(0,0,0,.35);
+      box-shadow: 0 18px 60px rgba(0,0,0,.55);
+      flex: 0 0 auto;
+      display:block;
+    }
+
+    /* Título bicolor: ElProfe blanco + Tino azul */
+    .brand-title{
+      font-weight: 900;
+      letter-spacing: .2px;
+      font-size: 18px;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .brand-title .elprofe{ color: rgba(255,255,255,.95); }
+    .brand-title .tino{ color: var(--brand); }
+
+    .brand-sub{
+      font-size:12px;
+      color:var(--muted);
+      margin-top: 2px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+      border-radius: 999px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.25);
+      color: var(--muted);
+      font-size: 13px;
+      white-space:nowrap;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:99px;
+      background: var(--ok);
+      box-shadow: 0 0 0 6px rgba(52,211,153,.15);
+    }
+
+    /* =========================================================
+       Hero
+       ========================================================= */
+    .hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    @media (max-width: 920px){
+      .hero{grid-template-columns: 1fr;}
+      .pill{white-space: normal;}
+    }
+
+    .card{
+      border:1px solid var(--stroke);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .hero-left{padding: 22px 22px 18px;}
+
+    h1{
+      margin: 8px 0 8px;
+      font-size: clamp(30px, 3.6vw, 46px);
+      line-height: 1.05;
+      letter-spacing: .2px;
+    }
+
+    .subtitle{
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.45;
+      margin: 10px 0 16px;
+    }
+
+    .kpis{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin: 14px 0 18px;
+    }
+    .kpi{
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .kpi b{color:var(--text)}
+
+    .cta-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin: 14px 0 10px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      border-radius: 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      font-weight: 800;
+      cursor:pointer;
+      transition: transform .12s ease, opacity .12s ease, background .12s ease;
+      user-select:none;
+      min-width: 190px;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(0,0,0,.26);}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(21,198,255,.9), rgba(21,198,255,.55));
+      border-color: rgba(21,198,255,.6);
+      color: #041018;
+    }
+    .btn.primary:hover{background: linear-gradient(135deg, rgba(21,198,255,1), rgba(21,198,255,.6));}
+    .btn.accent{
+      background: linear-gradient(135deg, rgba(255,176,0,.95), rgba(255,176,0,.6));
+      border-color: rgba(255,176,0,.65);
+      color:#1a1203;
+    }
+
+    .tiny{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    /* =========================================================
+       Hero Right (Video) — ajustado para que no sea gigante
+       ========================================================= */
+    .hero-right{
+      padding: 16px;
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+      align-items:center;
+      justify-content:flex-start;
+    }
+
+    .video-wrap{
+      width: 100%;
+      max-width: 460px;  /* un poco más angosto */
+      aspect-ratio: 16/9;
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid rgba(21,198,255,.35);
+      box-shadow: 0 18px 70px rgba(0,0,0,.5);
+      background: rgba(0,0,0,.35);
+      position:relative;
+      margin-top: 6px;
+    }
+
+    /* En desktop limitamos altura: así no “se come” el box */
+    @media (min-width: 921px){
+      .video-wrap{ max-height: 240px; }
+      .video-wrap video{ height: 240px; }
+    }
+
+    video{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+      background: rgba(0,0,0,.35);
+    }
+
+    .video-badge{
+      position:absolute;
+      left: 12px; top: 12px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(6px);
+      font-size: 12px;
+      color: rgba(255,255,255,.85);
+      z-index: 2;
+    }
+
+    .video-fallback{
+      display:none;
+      position:absolute;
+      inset:0;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding: 16px;
+      color: rgba(255,255,255,.85);
+      background: radial-gradient(900px 500px at 50% 50%, rgba(21,198,255,.12), rgba(0,0,0,.55));
+      z-index: 1;
+    }
+    .video-fallback b{color:#fff}
+
+    /* =========================================================
+       Sección herramientas
+       ========================================================= */
+    .section{
+      margin-top: 16px;
+      padding: 18px 18px 16px;
+    }
+
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 920px){
+      .grid3{grid-template-columns: 1fr;}
+    }
+
+    .mini{
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,.16);
+    }
+    .mini h3{ margin:0 0 6px; font-size: 15px; }
+    .mini p{ margin:0; color: var(--muted); line-height: 1.35; font-size: 13px; }
+
+    footer{
+      margin-top: 14px;
+      padding: 14px 2px 0;
+      color: rgba(255,255,255,.55);
+      font-size: 12px;
+      text-align:center;
+    }
+
+    /* =========================================================
+       Botón flotante WhatsApp
+       ========================================================= */
+    .wafab{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 20;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.16);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      transition: transform .12s ease;
+    }
+    .wafab strong{font-size: 13px}
+    .wafab span{font-size:12px;color:rgba(255,255,255,.7)}
+    .wafab:hover{transform: translateY(-1px)}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- =========================================================
+         HEADER
+         ========================================================= -->
+    <header>
+      <div class="brand">
+        <img class="logo" src="/assets/logo_EPT.png" alt="Logo ElProfeTino" />
+        <div>
+          <div class="brand-title" aria-label="ElProfeTino">
+            <span class="elprofe">ElProfe</span><span class="tino">Tino</span>
+          </div>
+          <div class="brand-sub">Educación inteligente</div>
+        </div>
+      </div>
+
+      <div class="pill" id="statusPill">
+        <span class="dot" id="dot"></span>
+        <span id="pillText">Agenda habilitada desde 07/01/2026</span>
+      </div>
+    </header>
+
+    <!-- =========================================================
+         HERO
+         ========================================================= -->
+    <main class="hero">
+      <section class="card hero-left">
+        <div class="pill" style="display:inline-flex;margin-bottom:10px;">
+          <span style="color:var(--accent);font-weight:900;">Experiencia ≥ 20 años</span>
+          <span style="opacity:.6">•</span>
+          <span>7º a 9º + Bachillerato</span>
+        </div>
+
+        <h1>Clases particulares de<br/>Matemática y Física</h1>
+
+        <p class="subtitle">
+          Presenciales, individuales y personalizadas.
+          Mi objetivo es simple: que el estudiante <b>entienda de verdad</b>, gane confianza y llegue seguro a parciales y exámenes.
+        </p>
+
+        <div class="kpis">
+          <div class="kpi">📍 Zona <b>Cordón</b></div>
+          <div class="kpi">🧠 Método: <b>Aprender es Entender</b></div>
+          <div class="kpi">🧩 Práctica + simulacros</div>
+        </div>
+
+        <div class="cta-row">
+          <a class="btn primary" id="btnAgenda" href="#" aria-disabled="true">📅 Agendar clase</a>
+          <a class="btn accent" id="btnWhats" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+        </div>
+
+        <div class="tiny" id="tinyNote">
+          La agenda se habilita automáticamente el <b>07/01/2026</b>.
+          Si querés, podés escribirme por WhatsApp para consultas o coordinación previa.
+        </div>
+      </section>
+
+      <aside class="card hero-right">
+        <div class="video-wrap">
+          <div class="video-badge">ElProfeTino • intro</div>
+
+          <!-- Video MP4 -->
+          <video
+            id="introVideo"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+            poster="/assets/portada_EPT.png"
+          >
+            <source src="/assets/EPT_explosivo.mp4" type="video/mp4" />
+            Tu navegador no soporta video HTML5.
+          </video>
+
+          <!-- Fallback si el video no carga -->
+          <div class="video-fallback" id="videoFallback">
+            <div>
+              <b>Video no disponible</b><br/>
+              Revisá que exista <code>/assets/EPT_explosivo.mp4</code><br/>
+              (igual podés contactarme por WhatsApp 👇)
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;color:var(--muted);font-size:13px;max-width:520px;">
+          <b style="color:var(--text)">Aprender es Entender</b> — y ahí arranca todo.
+        </div>
+      </aside>
+    </main>
+
+    <!-- =========================================================
+         HERRAMIENTAS
+         ========================================================= -->
+    <section class="card section">
+      <h2 style="margin:0 0 12px;font-size:18px;">Herramientas que potencian el aprendizaje</h2>
+
+      <div class="grid3">
+        <div class="mini">
+          <h3>🧩 TizaIA</h3>
+          <p>Responde dudas y explica temas, fórmulas, procedimientos y conceptos. Ideal para repasar fuera del horario de clase.</p>
+        </div>
+        <div class="mini">
+          <h3>✏️ GeneraTusEjercicios</h3>
+          <p>Genera práctica con ejercicios similares a los que necesitás, según tu nivel. Más práctica = más seguridad.</p>
+        </div>
+        <div class="mini">
+          <h3>📝 TuExamenPersonal</h3>
+          <p>Simula un examen parecido al real: lo resolvés online, con tiempo y corrección. Llegás al examen con cancha.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="year"></span>
+      <span style="color:#fff;font-weight:800;">ElProfe</span><span style="color:var(--brand);font-weight:800;">Tino</span>
+      • profepersonal.online
+    </footer>
+  </div>
+
+  <!-- WhatsApp flotante -->
+  <a class="wafab" id="waFab" href="#" target="_blank" rel="noopener">
+    <div style="font-size:18px;">💬</div>
+    <div style="display:flex;flex-direction:column;line-height:1.1">
+      <strong>WhatsApp</strong>
+      <span>Consultas rápidas</span>
+    </div>
+  </a>
+
+  <script>
+    // =========================================================
+    // CONFIG
+    // =========================================================
+    const WHATSAPP_NUMBER = "59898175225"; // sin "+"
+    const AGENDA_URL = "/agenda";          // futura ruta
+    const ENABLE_DATE_UTC = Date.UTC(2026, 0, 7, 0, 0, 0); // 07/01/2026
+
+    function waLink(message){
+      const txt = encodeURIComponent(message);
+      return `https://wa.me/${WHATSAPP_NUMBER}?text=${txt}`;
+    }
+
+    // Footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // WhatsApp
+    const msg = "Hola ElProfeTino, quiero consultar por clases de Matemática/Física (7º a 9º o Bachillerato).";
+    const wa = waLink(msg);
+    document.getElementById("btnWhats").href = wa;
+    document.getElementById("waFab").href = wa;
+
+    // Agenda habilitada desde 07/01/2026
+    const btnAgenda = document.getElementById("btnAgenda");
+    const pillText = document.getElementById("pillText");
+    const dot = document.getElementById("dot");
+    const tiny = document.getElementById("tinyNote");
+
+    function refreshAvailability(){
+      const enabled = Date.now() >= ENABLE_DATE_UTC;
+      if(enabled){
+        pillText.textContent = "Agenda habilitada ✅";
+        dot.style.background = "var(--ok)";
+        btnAgenda.href = AGENDA_URL;
+        btnAgenda.style.pointerEvents = "auto";
+        btnAgenda.setAttribute("aria-disabled","false");
+        tiny.innerHTML = "Agenda disponible. <b>Elegí día y hora</b> y confirmamos.";
+      }else{
+        btnAgenda.href = "#";
+        btnAgenda.style.pointerEvents = "none";
+        btnAgenda.setAttribute("aria-disabled","true");
+      }
+    }
+    refreshAvailability();
+
+    // Fallback para video (si no carga o autoplay bloqueado)
+    const video = document.getElementById("introVideo");
+    const fb = document.getElementById("videoFallback");
+
+    function showVideoFallback(){
+      fb.style.display = "flex";
+      video.setAttribute("controls","controls");
+    }
+
+    video.addEventListener("error", showVideoFallback);
+
+    setTimeout(() => {
+      const notReady = video.readyState <= 1;
+      const paused = video.paused;
+      if(notReady || paused){
+        video.play().catch(() => showVideoFallback());
+      }
+    }, 1200);
+  </script>
+</body>
+</html>
