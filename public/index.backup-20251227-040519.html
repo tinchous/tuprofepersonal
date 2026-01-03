@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-﻿<!DOCTYPE html>
-=======
 ﻿<!doctype html>
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
 <html lang="es-UY">
 <head>
   <meta charset="utf-8" />
@@ -114,65 +110,7 @@
     .faqbox p,.faqbox li{color:var(--muted);font-size:13px;line-height:1.4;margin:0}
     .faqbox ul{margin:8px 0 0 18px;padding:0}
     .faqbox b{color:var(--text)}
-  /* ====== PEO: estilos cuponeras (Onit patch) ====== */
-
-/* APOYO: borde azul (suave, prolijo) */
-.plan.apoyo{
-  border: 2px solid rgba(21,198,255,.85) !important;
-  box-shadow: 0 18px 80px rgba(21,198,255,.10);
-  background: rgba(21,198,255,.05);
-}
-
-/* EN EL HORNO: borde rojo (alerta pero lindo) */
-.plan.horno{
-  border: 2px solid rgba(255,80,80,.85) !important;
-  box-shadow: 0 18px 80px rgba(255,80,80,.12);
-  background: rgba(255,80,80,.04);
-}
-
-/* PREPARA TU EXAMEN: borde neón multicolor + más destaque */
-.plan.neon{
-  border: 2px solid transparent !important;
-  background:
-    linear-gradient(rgba(0,0,0,.18), rgba(0,0,0,.18)) padding-box,
-    linear-gradient(135deg,
-      rgba(21,198,255,.95),
-      rgba(255,0,214,.85),
-      rgba(255,176,0,.95),
-      rgba(124,58,237,.85),
-      rgba(21,198,255,.95)
-    ) border-box !important;
-
-  box-shadow:
-    0 22px 120px rgba(21,198,255,.10),
-    0 22px 120px rgba(255,0,214,.08),
-    0 22px 120px rgba(255,176,0,.08);
-
-  transform: translateY(-2px);
-}
-
-.plan.neon .tag{
-  border-color: rgba(255,255,255,.22);
-  background: rgba(0,0,0,.20);
-}
-
-/* “Cupos limitados” con vibe de urgencia sin ser grasa */
-.plan.neon .small b{
-  color: rgba(255,255,255,.95);
-  text-shadow: 0 0 18px rgba(255,176,0,.28);
-}
-
-/* Si querés que PREPARA grite un poquito más */
-@media (min-width: 920px){
-  .plan.neon{ transform: translateY(-4px) scale(1.01); }
-}
-
-/* ====== fin patch ====== */
-</style>
-<<<<<<< HEAD
-  <link rel="stylesheet" href="/reservas.css">
-=======
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
+  </style>
 </head>
 <body>
   <div class="wrap">
@@ -250,15 +188,12 @@
       </div>
 
       <div class="plans">
-        <div class="plan apoyo"><div class="tag">🟦 APOYO</div>
+        <div class="plan">
+          <div class="tag">🟦 APOYO</div>
           <div class="name">8 clases</div>
           <div class="price">UYU 3.800</div>
           <div class="small">Ideal para apoyo de tu curso mes a mes.</div>
-<<<<<<< HEAD
-          <div class="buy"><a class="btn buybtn" data-plan="APOYO (8 clases) - UYU 3.800" href="#" target="_blank" rel="noopener" data-ept-reserva="1" data-cuponera="APOYO" data-clases="8" href="javascript:void(0)">🟩 Comprar por WhatsApp</a></div>
-=======
           <div class="buy"><a class="btn buybtn" data-plan="APOYO (8 clases) - UYU 3.800" href="#" target="_blank" rel="noopener">🟩 Comprar por WhatsApp</a></div>
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
         </div>
 
         <div class="plan highlight">
@@ -266,34 +201,23 @@
           <div class="name">12 clases</div>
           <div class="price">UYU 5.400</div>
           <div class="small">Cuando necesitás algo más para entender todo.</div>
-<<<<<<< HEAD
-          <div class="buy"><a class="btn buybtn accent" data-plan="NO ENTIENDO (12 clases) - UYU 5.400" href="#" target="_blank" rel="noopener" data-ept-reserva="1" data-cuponera="NO ENTIENDO" data-clases="12" href="javascript:void(0)">⭐ ¡La quiero!</a></div>
-=======
           <div class="buy"><a class="btn buybtn accent" data-plan="NO ENTIENDO (12 clases) - UYU 5.400" href="#" target="_blank" rel="noopener">⭐ ¡La quiero!</a></div>
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
         </div>
 
-        <div class="plan horno"><div class="tag">🔥 EN EL HORNO</div>
+        <div class="plan">
+          <div class="tag">🔥 EN EL HORNO</div>
           <div class="name">15 clases</div>
           <div class="price">UYU 6.375</div>
           <div class="small">Si sentís que estás “en el horno”, esta es tu cuponera.</div>
-<<<<<<< HEAD
-          <div class="buy"><a class="btn buybtn" data-plan="EN EL HORNO (15 clases) - UYU 6.375" href="#" target="_blank" rel="noopener" data-ept-reserva="1" data-cuponera="EN EL HORNO" data-clases="15" href="javascript:void(0)">🟩 Comprar por WhatsApp</a></div>
-=======
           <div class="buy"><a class="btn buybtn" data-plan="EN EL HORNO (15 clases) - UYU 6.375" href="#" target="_blank" rel="noopener">🟩 Comprar por WhatsApp</a></div>
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
         </div>
 
-        <div class="plan exam neon">
+        <div class="plan exam">
           <div class="tag">🎓 PREPARA TU EXAMEN</div>
           <div class="name">12 clases • Febrero 2026</div>
           <div class="price">UYU 4.800</div>
-          <div class="small"><b>⏳ Cupos limitados</b><br/><b>Solo</b> para exámenes de Febrero 2026. Para llegar seguro y aprobar sí o sí.</div>
-<<<<<<< HEAD
-          <div class="buy"><a class="btn buybtn primary" data-plan="PREPARA TU EXAMEN (12 clases Feb/2026) - UYU 4.800" href="#" target="_blank" rel="noopener" data-ept-reserva="1" data-cuponera="PREPARA TU EXAMEN" data-clases="12" href="javascript:void(0)">🎯 Quiero preparar el examen</a></div>
-=======
+          <div class="small"><b>Solo</b> para exámenes de Febrero 2026. Para llegar seguro y aprobar sí o sí.</div>
           <div class="buy"><a class="btn buybtn primary" data-plan="PREPARA TU EXAMEN (12 clases Feb/2026) - UYU 4.800" href="#" target="_blank" rel="noopener">🎯 Quiero preparar el examen</a></div>
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
         </div>
       </div>
     </section>
@@ -364,75 +288,6 @@
   </div>
 
   <script>
-<<<<<<< HEAD
-  const WHATSAPP_NUMBER = "59898175225";
-
-  function waLink(message){
-    const txt = encodeURIComponent(message);
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${txt}`;
-  }
-
-  // Año footer
-  const yearEl = document.getElementById("year");
-  if(yearEl) yearEl.textContent = new Date().getFullYear();
-
-  // WhatsApp general (botón hero + FAQ)
-  const msgGeneral = "Hola ElProfeTino, quiero consultar por clases presenciales de Matemática/Física (7º a 9º o Bachillerato).";
-  const waGeneral = waLink(msgGeneral);
-  const btnWhats = document.getElementById("btnWhats");
-  const btnWhats2 = document.getElementById("btnWhats2");
-  if(btnWhats) btnWhats.href = waGeneral;
-  if(btnWhats2) btnWhats2.href = waGeneral;
-
-  // Si un botón tiene data-ept-reserva="1", NO le armamos mensaje acá (lo maneja reservas.js)
-  document.querySelectorAll("[data-plan]").forEach(a => {
-    if (a.getAttribute("data-ept-reserva") === "1") return;
-
-    const plan = a.getAttribute("data-plan");
-    const msg = `Hola ElProfeTino, quiero la cuponera: ${plan}. ¿Cómo coordinamos horarios?`;
-    a.href = waLink(msg);
-  });
-
-  // Modal FAQ
-  const backdrop = document.getElementById("modalBackdrop");
-  const openBtns = [document.getElementById("btnFaq"), document.getElementById("fabFaq")];
-  const closeBtns = [document.getElementById("modalClose"), document.getElementById("btnClose2")];
-
-  function openModal(){
-    if(!backdrop) return;
-    backdrop.style.display = "flex";
-    backdrop.setAttribute("aria-hidden","false");
-  }
-  function closeModal(){
-    if(!backdrop) return;
-    backdrop.style.display = "none";
-    backdrop.setAttribute("aria-hidden","true");
-  }
-
-  openBtns.forEach(b => b && b.addEventListener("click", openModal));
-  closeBtns.forEach(b => b && b.addEventListener("click", closeModal));
-  if(backdrop){
-    backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeModal(); });
-  }
-  window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
-
-  const fab = document.getElementById("fabFaq");
-  if(fab){
-    fab.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(); }
-    });
-  }
-
-  // Video fallback
-  const video = document.getElementById("introVideo");
-  const fb = document.getElementById("videoFallback");
-  function showVideoFallback(){
-    if(!fb || !video) return;
-    fb.style.display = "flex";
-    video.setAttribute("controls","controls");
-  }
-  if(video){
-=======
     const WHATSAPP_NUMBER = "59898175225";
     function waLink(message){
       const txt = encodeURIComponent(message);
@@ -469,70 +324,12 @@
     const video = document.getElementById("introVideo");
     const fb = document.getElementById("videoFallback");
     function showVideoFallback(){ fb.style.display = "flex"; video.setAttribute("controls","controls"); }
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
     video.addEventListener("error", showVideoFallback);
     setTimeout(() => {
       const notReady = video.readyState <= 1;
       const paused = video.paused;
       if(notReady || paused){ video.play().catch(() => showVideoFallback()); }
     }, 1200);
-<<<<<<< HEAD
-  }
-</script>
-  <script src="/reservas.js" defer></script>
-  <script>
-  // EPT_CLICK_DELEGATION (v2): cola de click si reservas.js todavía no está READY
-  (function(){
-    let pendingBtn = null;
-
-    function openIfReady(){
-      if(pendingBtn && window.EPT_OPEN_RESERVA){
-        const btn = pendingBtn;
-        pendingBtn = null;
-        window.EPT_OPEN_RESERVA(btn);
-      }
-    }
-
-    // Captura clicks (fase captura = true)
-    document.addEventListener("click", function(e){
-      const el = e.target.closest('[data-ept-reserva="1"]');
-      if(!el) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      if(window.EPT_OPEN_RESERVA){
-        window.EPT_OPEN_RESERVA(el);
-      } else {
-        pendingBtn = el;
-        console.log("⏳ Reservas cargando… abro apenas esté listo.");
-        // intento suave
-        setTimeout(openIfReady, 300);
-      }
-    }, true);
-
-    // Cuando reservas.js avisa READY, abrimos lo pendiente
-    window.addEventListener("EPT_RESERVAS_READY", function(){
-      openIfReady();
-    });
-
-    // Por las dudas: cuando termina de cargar la página
-    window.addEventListener("load", function(){
-      openIfReady();
-    });
-  })();
-</script>
-</body>
-</html>
-
-
-
-
-
-
-=======
   </script>
 </body>
 </html>
-
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5

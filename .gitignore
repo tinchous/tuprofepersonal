@@ -1,5 +1,8 @@
 if (!(Test-Path .\.gitignore)) { New-Item .\.gitignore | Out-Null }
 Add-Content .\.gitignore "`nnode_modules/`n.DS_Store`n.env`n"
+<<<<<<< HEAD
 
 .vercel
 .env*.local
+=======
+>>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
