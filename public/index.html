@@ -341,175 +341,127 @@
   </div>
 
   <script>
-<<<<<<< HEAD
-  const WHATSAPP_NUMBER = "59898175225";
+const WHATSAPP_NUMBER = "59898175225";
 
-  function waLink(message){
-    const txt = encodeURIComponent(message);
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${txt}`;
-  }
+function waLink(message){
+  const txt = encodeURIComponent(message);
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${txt}`;
+}
 
-  // Año footer
-  const yearEl = document.getElementById("year");
-  if(yearEl) yearEl.textContent = new Date().getFullYear();
+// Año footer
+const yearEl = document.getElementById("year");
+if(yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // WhatsApp general (botón hero + FAQ)
-  const msgGeneral = "Hola ElProfeTino, quiero consultar por clases presenciales de Matemática/Física (7º a 9º o Bachillerato).";
-  const waGeneral = waLink(msgGeneral);
-  const btnWhats = document.getElementById("btnWhats");
-  const btnWhats2 = document.getElementById("btnWhats2");
-  if(btnWhats) btnWhats.href = waGeneral;
-  if(btnWhats2) btnWhats2.href = waGeneral;
+// WhatsApp general
+const msgGeneral = "Hola ElProfeTino, quiero consultar por clases presenciales de Matemática/Física (7º a 9º o Bachillerato).";
+const waGeneral = waLink(msgGeneral);
+const btnWhats = document.getElementById("btnWhats");
+const btnWhats2 = document.getElementById("btnWhats2");
+if(btnWhats) btnWhats.href = waGeneral;
+if(btnWhats2) btnWhats2.href = waGeneral;
 
-  // Si un botón tiene data-ept-reserva="1", NO le armamos mensaje acá (lo maneja reservas.js)
-  document.querySelectorAll("[data-plan]").forEach(a => {
-    if (a.getAttribute("data-ept-reserva") === "1") return;
+// Modal FAQ
+const backdrop = document.getElementById("modalBackdrop");
+const openBtns = [document.getElementById("btnFaq"), document.getElementById("fabFaq")];
+const closeBtns = [document.getElementById("modalClose"), document.getElementById("btnClose2")];
 
-    const plan = a.getAttribute("data-plan");
-    const msg = `Hola ElProfeTino, quiero la cuponera: ${plan}. ¿Cómo coordinamos horarios?`;
-    a.href = waLink(msg);
-  });
+function openModal(){
+  if(!backdrop) return;
+  backdrop.style.display = "flex";
+  backdrop.setAttribute("aria-hidden","false");
+}
+function closeModal(){
+  if(!backdrop) return;
+  backdrop.style.display = "none";
+  backdrop.setAttribute("aria-hidden","true");
+}
 
-  // Modal FAQ
-  const backdrop = document.getElementById("modalBackdrop");
-  const openBtns = [document.getElementById("btnFaq"), document.getElementById("fabFaq")];
-  const closeBtns = [document.getElementById("modalClose"), document.getElementById("btnClose2")];
+openBtns.forEach(b => b && b.addEventListener("click", openModal));
+closeBtns.forEach(b => b && b.addEventListener("click", closeModal));
+if(backdrop){
+  backdrop.addEventListener("click", e => { if(e.target === backdrop) closeModal(); });
+}
+window.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
 
-  function openModal(){
-    if(!backdrop) return;
-    backdrop.style.display = "flex";
-    backdrop.setAttribute("aria-hidden","false");
-  }
-  function closeModal(){
-    if(!backdrop) return;
-    backdrop.style.display = "none";
-    backdrop.setAttribute("aria-hidden","true");
-  }
-
-  openBtns.forEach(b => b && b.addEventListener("click", openModal));
-  closeBtns.forEach(b => b && b.addEventListener("click", closeModal));
-  if(backdrop){
-    backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeModal(); });
-  }
-  window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
-
-  const fab = document.getElementById("fabFaq");
-  if(fab){
-    fab.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(); }
-    });
-  }
-
-  // Video fallback
-  const video = document.getElementById("introVideo");
-  const fb = document.getElementById("videoFallback");
-  function showVideoFallback(){
-    if(!fb || !video) return;
-    fb.style.display = "flex";
-    video.setAttribute("controls","controls");
-  }
-  if(video){
-=======
-    const WHATSAPP_NUMBER = "59898175225";
-    function waLink(message){
-      const txt = encodeURIComponent(message);
-      return https://wa.me/59898175225?text=;
+// Video fallback
+const video = document.getElementById("introVideo");
+const fb = document.getElementById("videoFallback");
+function showVideoFallback(){
+  if(!fb || !video) return;
+  fb.style.display = "flex";
+  video.setAttribute("controls","controls");
+}
+if(video){
+  video.addEventListener("error", showVideoFallback);
+  setTimeout(() => {
+    if(video.readyState <= 1 || video.paused){
+      video.play().catch(showVideoFallback);
     }
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    const msgGeneral = "Hola ElProfeTino, quiero consultar por clases presenciales de Matemática/Física (7º a 9º o Bachillerato).";
-    const waGeneral = waLink(msgGeneral);
-    document.getElementById("btnWhats").href = waGeneral;
-    document.getElementById("btnWhats2").href = waGeneral;
-
-    document.querySelectorAll("[data-plan]").forEach(a => {
-      const plan = a.getAttribute("data-plan");
-      const msg = Hola ElProfeTino, quiero la cuponera: . ¿Cómo coordinamos horarios?;
-      a.href = waLink(msg);
-    });
-
-    const backdrop = document.getElementById("modalBackdrop");
-    const openBtns = [document.getElementById("btnFaq"), document.getElementById("fabFaq")];
-    const closeBtns = [document.getElementById("modalClose"), document.getElementById("btnClose2")];
-
-    function openModal(){ backdrop.style.display = "flex"; backdrop.setAttribute("aria-hidden","false"); }
-    function closeModal(){ backdrop.style.display = "none"; backdrop.setAttribute("aria-hidden","true"); }
-
-    openBtns.forEach(b => b && b.addEventListener("click", openModal));
-    closeBtns.forEach(b => b && b.addEventListener("click", closeModal));
-    backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeModal(); });
-    window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
-    document.getElementById("fabFaq").addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(); }
-    });
-
-    const video = document.getElementById("introVideo");
-    const fb = document.getElementById("videoFallback");
-    function showVideoFallback(){ fb.style.display = "flex"; video.setAttribute("controls","controls"); }
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
-    video.addEventListener("error", showVideoFallback);
-    setTimeout(() => {
-      const notReady = video.readyState <= 1;
-      const paused = video.paused;
-      if(notReady || paused){ video.play().catch(() => showVideoFallback()); }
-    }, 1200);
-<<<<<<< HEAD
-  }
+  }, 1200);
+}
 </script>
   <script src="/reservas.js" defer></script>
   <script>
-  // EPT_CLICK_DELEGATION (v2): cola de click si reservas.js todavía no está READY
-  (function(){
-    let pendingBtn = null;
+const WHATSAPP_NUMBER = "59898175225";
 
-    function openIfReady(){
-      if(pendingBtn && window.EPT_OPEN_RESERVA){
-        const btn = pendingBtn;
-        pendingBtn = null;
-        window.EPT_OPEN_RESERVA(btn);
-      }
+function waLink(message){
+  const txt = encodeURIComponent(message);
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${txt}`;
+}
+
+// Año footer
+const yearEl = document.getElementById("year");
+if(yearEl) yearEl.textContent = new Date().getFullYear();
+
+// WhatsApp general
+const msgGeneral = "Hola ElProfeTino, quiero consultar por clases presenciales de Matemática/Física (7º a 9º o Bachillerato).";
+const waGeneral = waLink(msgGeneral);
+const btnWhats = document.getElementById("btnWhats");
+const btnWhats2 = document.getElementById("btnWhats2");
+if(btnWhats) btnWhats.href = waGeneral;
+if(btnWhats2) btnWhats2.href = waGeneral;
+
+// Modal FAQ
+const backdrop = document.getElementById("modalBackdrop");
+const openBtns = [document.getElementById("btnFaq"), document.getElementById("fabFaq")];
+const closeBtns = [document.getElementById("modalClose"), document.getElementById("btnClose2")];
+
+function openModal(){
+  if(!backdrop) return;
+  backdrop.style.display = "flex";
+  backdrop.setAttribute("aria-hidden","false");
+}
+function closeModal(){
+  if(!backdrop) return;
+  backdrop.style.display = "none";
+  backdrop.setAttribute("aria-hidden","true");
+}
+
+openBtns.forEach(b => b && b.addEventListener("click", openModal));
+closeBtns.forEach(b => b && b.addEventListener("click", closeModal));
+if(backdrop){
+  backdrop.addEventListener("click", e => { if(e.target === backdrop) closeModal(); });
+}
+window.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
+
+// Video fallback
+const video = document.getElementById("introVideo");
+const fb = document.getElementById("videoFallback");
+function showVideoFallback(){
+  if(!fb || !video) return;
+  fb.style.display = "flex";
+  video.setAttribute("controls","controls");
+}
+if(video){
+  video.addEventListener("error", showVideoFallback);
+  setTimeout(() => {
+    if(video.readyState <= 1 || video.paused){
+      video.play().catch(showVideoFallback);
     }
-
-    // Captura clicks (fase captura = true)
-    document.addEventListener("click", function(e){
-      const el = e.target.closest('[data-ept-reserva="1"]');
-      if(!el) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      if(window.EPT_OPEN_RESERVA){
-        window.EPT_OPEN_RESERVA(el);
-      } else {
-        pendingBtn = el;
-        console.log("⏳ Reservas cargando… abro apenas esté listo.");
-        // intento suave
-        setTimeout(openIfReady, 300);
-      }
-    }, true);
-
-    // Cuando reservas.js avisa READY, abrimos lo pendiente
-    window.addEventListener("EPT_RESERVAS_READY", function(){
-      openIfReady();
-    });
-
-    // Por las dudas: cuando termina de cargar la página
-    window.addEventListener("load", function(){
-      openIfReady();
-    });
-  })();
+  }, 1200);
+}
 </script>
 </body>
 </html>
 
 
-
-
-
-
-=======
-  </script>
-</body>
-</html>
-
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
