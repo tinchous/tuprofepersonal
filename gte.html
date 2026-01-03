@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GTE - GeneraTusEjercicios</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://www.geogebra.org/script/5.0/web3d.nocache.js"></script>
+  <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+  <style>
+    :root {
+      --neon-lime: #ccff00;
+      --neon-cyan: #00ffff;
+      --neon-magenta: #ff00ff;
+      --neon-bg: #1a0033;
+      --neon-text: #ffffff;
+      --neon-border: #00ccff;
+      --neon-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff, 0 0 30px #ccff00;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a0033, #330066);
+      color: var(--neon-text);
+      margin: 0;
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 30px auto;
+      border: 4px solid var(--neon-border);
+      box-shadow: var(--neon-shadow);
+    }
+    header {
+      text-align: center;
+      padding: 15px;
+      border: 2px solid var(--neon-border);
+      border-radius: 12px;
+      box-shadow: var(--neon-shadow);
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--neon-cyan);
+      font-size: 36px;
+      text-shadow: var(--neon-shadow);
+    }
+    h2.subtitulo {
+      font-size: 18px;
+      color: var(--neon-lime);
+    }
+    .menu {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .menu button {
+      background: var(--neon-lime);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: inset 2px 2px 6px rgba(255,255,255,0.3), inset -2px -2px 6px rgba(0,0,0,0.5), var(--neon-shadow);
+      border: none;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .menu button.selected {
+      background: #ffff66;
+      transform: scale(1.05);
+    }
+    .chat-section {
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid var(--neon-border);
+      border-radius: 10px;
+      box-shadow: var(--neon-shadow);
+      overflow: hidden;
+    }
+    .chat-body {
+      height: 50vh;
+      overflow-y: auto;
+      padding: 20px;
+      scroll-behavior: smooth;
+    }
+    .message {
+      margin: 12px 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      max-width: 80%;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .user-message {
+      background: var(--neon-magenta);
+      margin-left: auto;
+      border-bottom-right-radius: 2px;
+    }
+    .bot-message {
+      background: rgba(0, 204, 255, 0.2);
+      margin-right: auto;
+      border-bottom-left-radius: 2px;
+    }
+    .chat-footer {
+      padding: 20px;
+      border-top: 2px solid var(--neon-border);
+      background: rgba(0, 0, 0, 0.7);
+    }
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    textarea {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      resize: none;
+      min-height: 80px;
+      box-shadow: var(--neon-shadow);
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--neon-lime);
+    }
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .action-button {
+      flex: 1;
+      min-width: 120px;
+      background: var(--neon-lime);
+      color: #000;
+      font-weight: bold;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: none;
+      box-shadow: var(--neon-shadow);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .action-button:hover {
+      background: #99cc00;
+      transform: scale(1.05);
+    }
+    .file-input {
+      display: none;
+    }
+    .file-label {
+      display: inline-block;
+      background: var(--neon-lime);
+      color: #000;
+      font-weight: bold;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: none;
+      box-shadow: var(--neon-shadow);
+      cursor: pointer;
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+    }
+    .file-label:hover {
+      background: #99cc00;
+      transform: scale(1.05);
+    }
+    .preview-image {
+      max-width: 200px;
+      margin: 10px auto;
+      display: block;
+      border: 2px solid var(--neon-border);
+      border-radius: 10px;
+    }
+    .video-container {
+      width: 100%;
+      max-width: 400px;
+      height: 300px;
+      margin: 15px auto;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid var(--neon-border);
+      background: #000;
+      position: relative;
+      box-shadow: var(--neon-shadow);
+      display: none;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .camera-controls {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 5px;
+    }
+    .camera-button {
+      background: var(--neon-magenta);
+      color: var(--neon-text);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+      box-shadow: var(--neon-shadow);
+    }
+    .camera-button:hover {
+      background: #cc00cc;
+      transform: scale(1.1);
+    }
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      margin: 0 3px;
+      animation: typing 1s infinite ease-in-out;
+      box-shadow: 0 0 5px var(--neon-cyan);
+    }
+    @keyframes typing {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 20px;
+      border: 2px solid var(--neon-border);
+      border-radius: 12px;
+      box-shadow: var(--neon-shadow);
+    }
+    .exercise-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .exercise-options select {
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      box-shadow: var(--neon-shadow);
+    }
+    .exercise-options select:focus {
+      outline: none;
+      border-color: var(--neon-lime);
+    }
+    @media (max-width: 768px) {
+      body { padding: 20px 10px; }
+      h1 { font-size: 28px; }
+      .chat-body { height: 40vh; }
+      textarea { font-size: 14px; min-height: 60px; }
+      .action-button, .file-label { font-size: 12px; padding: 10px; min-width: 100%; }
+      .video-container { max-width: 100%; height: 250px; }
+      .menu button, .exercise-options select { font-size: 12px; padding: 8px 15px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GTE - GeneraTusEjercicios</h1>
+    <h2 class="subtitulo">¡Creá ejercicios personalizados y aprendé paso a paso! 📚⚡</h2>
+  </header>
+
+  <div class="menu">
+    <button onclick="seleccionarMateria(this, 'Matemáticas')">📐 Matemáticas</button>
+    <button onclick="seleccionarMateria(this, 'Física')">🧲 Física</button>
+    <button onclick="seleccionarMateria(this, 'Química')">⚗️ Química</button>
+    <button onclick="seleccionarMateria(this, 'Informática')">💻 Informática</button>
+    <button onclick="seleccionarMateria(this, 'Otras')">🌟 Otras</button>
+  </div>
+
+  <div class="chat-section">
+    <div class="chat-body" id="chatBody" role="log" aria-live="polite"></div>
+    <div class="chat-footer">
+      <div class="input-container">
+        <div class="exercise-options">
+          <select id="difficultyLevel">
+            <option value="básico">Básico</option>
+            <option value="intermedio">Intermedio</option>
+            <option value="avanzado">Avanzado</option>
+          </select>
+        </div>
+        <textarea id="messageInput" rows="3" placeholder="Escribe el tema del ejercicio (ej. Ecuaciones cuadráticas)..."></textarea>
+        <div class="button-row">
+          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" class="file-input">
+          <label for="fileInput" class="file-label">📎 Archivo</label>
+          <button id="cameraButton" class="action-button">📸 Foto</button>
+          <button id="clearButton" class="action-button">🧹 Limpiar</button>
+          <button id="downloadButton" class="action-button">💾 Descargar</button>
+        </div>
+        <div id="previewContainer"></div>
+        <div id="videoContainer" class="video-container">
+          <video id="video" autoplay></video>
+          <div class="camera-controls">
+            <button id="captureButton" class="camera-button">Capturar</button>
+            <button id="cancelButton" class="camera-button">Cancelar</button>
+          </div>
+        </div>
+        <button id="sendButton" class="action-button">Generar Ejercicio</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 GeneraTusEjercicios | ProfePersonal</p>
+  </footer>
+
+  <script>
+    const API_KEY = 'AIzaSyBui3fQPzbvs0BwKwNIJb6Qo-tvsdzWVkU';
+    const translations = {
+      "es": {
+        header: "GTE - GeneraTusEjercicios",
+        welcome: "¡Hola, loco! Soy GTE, tu generador de ejercicios personalizados. Elegí una materia, un tema y el nivel de dificultad, ¡y te armo un ejercicio con solución paso a paso! También podés subir un archivo o sacar una foto para basar el ejercicio en eso. ¿Qué querés practicar?",
+        fileUploaded: "¡Subiste el archivo: ${filename}! Vamos a crear un ejercicio basado en su contenido.",
+        photoTaken: "¡Foto sacada, ta perfecta! Ahora genero un ejercicio con eso.",
+        photoCanceled: "Tranqui, cancelamos la foto, ¿qué seguimos?",
+        uploading: "Subiendo archivo...",
+        processing: "Procesando archivo, por favor espera...",
+        uploadComplete: "¡Archivo subido con éxito!",
+        uploadCanceled: "Subida cancelada",
+        uploadError: "Error al subir el archivo",
+        graphPrompt: "Elegí una herramienta para ver el gráfico:"
+      }
+    };
+
+    // Elementos del DOM
+    const chatBody = document.getElementById("chatBody");
+    const messageInput = document.getElementById("messageInput");
+    const difficultyLevel = document.getElementById("difficultyLevel");
+    const fileInput = document.getElementById("fileInput");
+    const cameraButton = document.getElementById("cameraButton");
+    const sendButton = document.getElementById("sendButton");
+    const clearButton = document.getElementById("clearButton");
+    const downloadButton = document.getElementById("downloadButton");
+    const previewContainer = document.getElementById("previewContainer");
+    const videoContainer = document.getElementById("videoContainer");
+    const video = document.getElementById("video");
+    const captureButton = document.getElementById("captureButton");
+    const cancelButton = document.getElementById("cancelButton");
+
+    // Variables globales
+    let stream = null;
+    let capturedImage = null;
+    let queryCount = 0;
+    const maxQueries = 5;
+    const lang = translations["es"];
+    let uploadInProgress = false;
+    let uploadCanceled = false;
+    let isTyping = false;
+    let messageCount = 0;
+    const graphCalculators = {};
+    let selectedSubject = '';
+    let exerciseCounter = 0;
+
+    // Seleccionar materia
+    function seleccionarMateria(btn, materia) {
+      document.querySelectorAll('.menu button').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedSubject = materia;
+      addMessage(`¡Copado! Ahora estoy en modo ${materia}. Elegí el tema y nivel de dificultad.`, "bot");
+    }
+
+    // Agregar mensaje
+    function addMessage(text, type) {
+      if (type === 'bot' && !isTyping) {
+        showTypingIndicator();
+        setTimeout(() => {
+          removeTypingIndicator();
+          addMessageContent(text, type);
+        }, 1000);
+        return;
+      }
+      addMessageContent(text, type);
+    }
+
+    function showTypingIndicator() {
+      isTyping = true;
+      const typingDiv = document.createElement("div");
+      typingDiv.classList.add("message", "bot-message");
+      typingDiv.id = "typingIndicator";
+      const typingContent = document.createElement("div");
+      typingContent.className = "typing-indicator";
+      typingContent.innerHTML = '<span></span><span></span><span></span>';
+      typingDiv.appendChild(typingContent);
+      chatBody.appendChild(typingDiv);
+      scrollToBottom();
+    }
+
+    function removeTypingIndicator() {
+      const typingIndicator = document.getElementById("typingIndicator");
+      if (typingIndicator) typingIndicator.remove();
+      isTyping = false;
+    }
+
+    function addMessageContent(text, type) {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message", type === "user" ? "user-message" : "bot-message");
+      messageDiv.id = `message-${messageCount++}`;
+      let processedText = text;
+
+      if (type === "bot") {
+        const graphMarker = "\n\n**Graph Instructions:**";
+        const graphIndex = text.indexOf(graphMarker);
+        let graphInstructions = null;
+        if (graphIndex !== -1) {
+          processedText = text.substring(0, graphIndex);
+          const jsonStr = text.substring(graphIndex + graphMarker.length).trim();
+          try {
+            graphInstructions = JSON.parse(jsonStr);
+          } catch (e) {
+            console.error("Error parsing graph instructions:", e);
+          }
+        }
+
+        processedText = processedText
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/_([^_]+)_/g, '<em>$1</em>')
+          .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+          .replace(/\$\$(.*?)\$\$/g, '<span class="formula">$1</span>')
+          .replace(/Ejercicio:/g, '<div class="exercise"><strong>Ejercicio:</strong>')
+          .replace(/Solución paso a paso:/g, '<div class="solution"><strong>Solución paso a paso:</strong>')
+          .replace(/Sugerencias:/g, '<div class="suggestions"><strong>Sugerencias:</strong>');
+
+        messageDiv.innerHTML = processedText;
+
+        if (graphInstructions && graphInstructions.type === "graph" && graphInstructions.tools) {
+          const optionsDiv = document.createElement("div");
+          optionsDiv.classList.add("graph-options");
+          optionsDiv.innerHTML = `<p>${lang.graphPrompt}</p>`;
+          const tools = graphInstructions.tools;
+          const messageId = messageDiv.id;
+
+          if (tools.geogebra) {
+            const geoButton = document.createElement("button");
+            geoButton.className = "action-button";
+            geoButton.textContent = "Ver con GeoGebra";
+            const geoContainer = document.createElement("div");
+            geoContainer.id = `${messageId}-geogebra`;
+            geoContainer.className = "graph-container";
+            geoButton.onclick = () => toggleGraph(geoContainer, initGeogebra, tools.geogebra, messageId);
+            optionsDiv.appendChild(geoButton);
+            messageDiv.appendChild(geoContainer);
+          }
+
+          if (tools.desmos) {
+            const desmosButton = document.createElement("button");
+            desmosButton.className = "action-button";
+            desmosButton.textContent = "Ver con Desmos";
+            const desmosContainer = document.createElement("div");
+            desmosContainer.id = `${messageId}-desmos`;
+            desmosContainer.className = "graph-container";
+            desmosButton.onclick = () => toggleGraph(desmosContainer, initDesmos, tools.desmos, messageId);
+            optionsDiv.appendChild(desmosButton);
+            messageDiv.appendChild(desmosContainer);
+          }
+
+          messageDiv.appendChild(optionsDiv);
+        }
+      } else {
+        messageDiv.textContent = processedText;
+      }
+      chatBody.appendChild(messageDiv);
+      scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function toggleGraph(container, initFunction, commands, messageId) {
+      const otherContainers = document.querySelectorAll(`#${messageId} .graph-container`);
+      otherContainers.forEach(c => {
+        if (c !== container) c.style.display = "none";
+      });
+
+      if (container.style.display === "block") {
+        container.style.display = "none";
+        const controls = container.nextElementSibling;
+        if (controls && controls.className === "graph-controls") controls.style.display = "none";
+      } else {
+        container.style.display = "block";
+        if (!container.dataset.initialized) {
+          initFunction(container.id, commands);
+          container.dataset.initialized = "true";
+          addGraphControls(container, initFunction === initDesmos ? "desmos" : "geogebra", commands, messageId);
+        }
+      }
+      scrollToBottom();
+    }
+
+    function initGeogebra(containerId, commands) {
+      const parameters = {
+        "appName": "classic",
+        "width": 600,
+        "height": 400,
+        "showToolBar": false,
+        "showAlgebraInput": false,
+        "showMenuBar": false
+      };
+      const applet = new GGBApplet(parameters, true);
+      applet.setHTML5Codebase('https://www.geogebra.org/web/5.0/', 'true');
+      applet.inject(containerId);
+      setTimeout(() => {
+        commands.forEach(cmd => applet.evalCommand(cmd));
+      }, 500);
+    }
+
+    function initDesmos(containerId, expressions) {
+      if (graphCalculators[containerId]) {
+        graphCalculators[containerId].destroy();
+        delete graphCalculators[containerId];
+      }
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+      const calculator = Desmos.GraphingCalculator(container, {
+        width: 600,
+        height: 400,
+        keypad: false,
+        expressionsTopbar: false
+      });
+      expressions.forEach(expr => calculator.setExpression({ id: `graph-${Date.now()}`, latex: expr }));
+      graphCalculators[containerId] = calculator;
+    }
+
+    function addGraphControls(container, toolType, commands, messageId) {
+      let controlsDiv = container.nextElementSibling;
+      if (!controlsDiv || controlsDiv.className !== "graph-controls") {
+        controlsDiv = document.createElement("div");
+        controlsDiv.className = "graph-controls";
+        container.insertAdjacentElement("afterend", controlsDiv);
+      }
+      controlsDiv.innerHTML = "";
+      const downloadButton = document.createElement("button");
+      downloadButton.className = "action-button";
+      downloadButton.textContent = "Descargar Gráfico";
+      downloadButton.onclick = () => downloadGraph(container, toolType, messageId);
+      const clearButton = document.createElement("button");
+      clearButton.className = "action-button";
+      clearButton.textContent = "Borrar Gráfico";
+      clearButton.onclick = () => clearGraph(container, toolType, messageId);
+      controlsDiv.appendChild(downloadButton);
+      controlsDiv.appendChild(clearButton);
+      controlsDiv.style.display = "flex";
+    }
+
+    function downloadGraph(container, toolType, messageId) {
+      if (toolType === "desmos") {
+        const calculator = graphCalculators[container.id];
+        if (calculator) {
+          calculator.asyncScreenshot({ format: "png" }, (data) => {
+            const link = document.createElement("a");
+            link.href = data;
+            link.download = `grafico_desmos_${messageId}.png`;
+            link.click();
+          });
+        }
+      } else if (toolType === "geogebra") {
+        const applet = document.ggbApplet;
+        if (applet && applet.getPNGBase64) {
+          const base64 = applet.getPNGBase64(1);
+          const link = document.createElement("a");
+          link.href = "data:image/png;base64," + base64;
+          link.download = `grafico_geogebra_${messageId}.png`;
+          link.click();
+        } else {
+          alert("No se pudo descargar el gráfico de GeoGebra. Intenta de nuevo.");
+        }
+      }
+    }
+
+    function clearGraph(container, toolType, messageId) {
+      if (toolType === "desmos") {
+        if (graphCalculators[container.id]) {
+          graphCalculators[container.id].destroy();
+          delete graphCalculators[container.id];
+        }
+      }
+      container.innerHTML = "";
+      container.style.display = "none";
+      container.dataset.initialized = "";
+      const controls = container.nextElementSibling;
+      if (controls && controls.className === "graph-controls") controls.style.display = "none";
+      scrollToBottom();
+    }
+
+    async function processFile(file) {
+      uploadCanceled = false;
+      uploadInProgress = true;
+      try {
+        let result = null;
+        if (file.type === "application/pdf") {
+          const text = await extractTextFromPDF(file);
+          addMessage(lang.fileUploaded.replace("${filename}", file.name), "user");
+          result = { text: `Generá un ejercicio de nivel ${difficultyLevel.value} basado en el contenido de este PDF:\n\n${text}`, image: null };
+        } else if (file.type.startsWith("image/")) {
+          const imageUrl = URL.createObjectURL(file);
+          const img = document.createElement("img");
+          img.src = imageUrl;
+          img.classList.add("preview-image");
+          previewContainer.appendChild(img);
+          addMessage(lang.fileUploaded.replace("${filename}", file.name), "user");
+          result = { text: `Generá un ejercicio de nivel ${difficultyLevel.value} basado en el contenido de esta imagen.`, image: imageUrl };
+        } else {
+          throw new Error("Formato de archivo no soportado");
+        }
+        return result;
+      } catch (error) {
+        addMessage(`¡Uy, loco! Error al procesar el archivo: ${error.message}`, "bot");
+        return null;
+      } finally {
+        uploadInProgress = false;
+      }
+    }
+
+    async function extractTextFromPDF(file) {
+      try {
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js';
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+        let text = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          text += content.items.map(item => item.str).join(' ') + '\n';
+        }
+        return text;
+      } catch (error) {
+        throw new Error("No se pudo leer el PDF.");
+      }
+    }
+
+    async function startCamera() {
+      try {
+        if (stream) stopCamera();
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { width: { ideal: 800 }, height: { ideal: 800 }, facingMode: 'environment' } 
+        });
+        video.srcObject = stream;
+        videoContainer.style.display = "block";
+        scrollToBottom();
+      } catch (error) {
+        addMessage(`¡Uy, loco! Error con la cámara: ${error.message}`, "bot");
+      }
+    }
+
+    function capturePhoto() {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0);
+        capturedImage = canvas.toDataURL("image/jpeg");
+        const img = document.createElement("img");
+        img.src = capturedImage;
+        img.classList.add("preview-image");
+        previewContainer.appendChild(img);
+        stopCamera();
+        addMessage(lang.photoTaken, "user");
+      } catch (error) {
+        addMessage("¡No pude capturar la foto!", "bot");
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        videoContainer.style.display = "none";
+        video.srcObject = null;
+        stream = null;
+      }
+    }
+
+    function cancelPhoto() {
+      stopCamera();
+      addMessage(lang.photoCanceled, "user");
+      capturedImage = null;
+    }
+
+    function generateTXT() {
+      try {
+        const today = new Date();
+        const dateString = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth()+1).toString().padStart(2, '0')}/${today.getFullYear()} ${today.getHours().toString().padStart(2, '0')}:${today.getMinutes().toString().padStart(2, '0')}`;
+        let content = "==================================================\n";
+        content += "         GTE - GeneraTusEjercicios         \n";
+        content += `               Generado el: ${dateString}               \n`;
+        content += "==================================================\n\n";
+
+        const messages = chatBody.querySelectorAll('.message');
+        let currentExercise = null;
+        messages.forEach((message, index) => {
+          const isUser = message.classList.contains('user-message');
+          const text = message.textContent;
+          if (isUser && text.includes("Tema:") && !text.includes("archivo") && !text.includes("foto")) {
+            currentExercise = `Ejercicio ${++exerciseCounter}: ${text.replace("Tema:", "").trim()}`;
+            content += `=== ${currentExercise} ===\n`;
+          } else if (isUser && (text.includes("archivo") || text.includes("foto"))) {
+            currentExercise = `Ejercicio ${++exerciseCounter}: Basado en ${text}`;
+            content += `=== ${currentExercise} ===\n`;
+          } else {
+            content += `${isUser ? "Usuario" : "GTE"}: ${text}\n`;
+            content += "----------------------------------------\n";
+          }
+        });
+
+        content += "\n==================================================\n";
+        content += "¡Gracias por usar ProfePersonal! 🚀\n";
+        content += "Seguinos en nuestras redes para más tips y recursos educativos:\n";
+        content += "📸 Instagram: @ProfePersonalUy\n";
+        content += "🎥 TikTok: @ProfePersonalUy\n";
+        content += "✖️ X: @ProfePersonalUy\n";
+        content += "==================================================\n";
+
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const fileName = `GTE_${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}.txt`;
+        saveAs(blob, fileName);
+      } catch (error) {
+        addMessage("¡Uy, loco! Hubo un error al generar el archivo.", "bot");
+      }
+    }
+
+    async function sendMessage() {
+      try {
+        let messageText = messageInput.value.trim();
+        let finalMessage = { text: messageText, image: null };
+        if (queryCount >= maxQueries) {
+          addMessage("¡Pará, loco! Llegaste al límite de 5 ejercicios.", "bot");
+          return;
+        }
+        if (!messageText && !fileInput.files.length && !capturedImage) return;
+
+        if (fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          finalMessage = await processFile(file) || finalMessage;
+          fileInput.value = "";
+        } else if (capturedImage) {
+          finalMessage = { text: `Generá un ejercicio de nivel ${difficultyLevel.value} basado en el contenido de esta foto.`, image: capturedImage };
+        } else {
+          finalMessage = { text: `Tema: ${messageText}` };
+          addMessage(`Tema: ${messageText}`, "user");
+        }
+
+        if (finalMessage.text || finalMessage.image) {
+          messageInput.value = "";
+          previewContainer.innerHTML = "";
+          capturedImage = null;
+          const botResponse = await getGTEResponse(finalMessage.text, finalMessage.image);
+          addMessage(botResponse, "bot");
+          queryCount++;
+        }
+      } catch (error) {
+        addMessage(`¡Qué macana! Error: ${error.message}`, "bot");
+      }
+    }
+
+    async function getGTEResponse(text, image) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+      const prompt = `Eres GTE, un generador de ejercicios personalizados para ${selectedSubject || 'todas las materias'}. Responde en español uruguayo, con un tono didáctico y claro, como un profe de liceo. Generá un ejercicio de nivel ${difficultyLevel.value} sobre el tema o contenido proporcionado. El ejercicio debe incluir:
+      - Enunciado claro.
+      - Solución detallada paso a paso.
+      - Sugerencias para practicar más.
+      No respondas dudas ni generes exámenes, solo crea un ejercicio y explicalo. Si se proporciona un archivo o imagen, basa el ejercicio en su contenido. Formato:
+      **Ejercicio:** [Enunciado]
+      **Solución paso a paso:** [Pasos]
+      **Sugerencias:** [Sugerencias]
+      Si el ejercicio requiere graficar, incluye al final "\n\n**Graph Instructions:**" con un JSON para GeoGebra y Desmos. Ejemplo: "\n\n**Graph Instructions:** {\"type\": \"graph\", \"tools\": {\"geogebra\": [\"y=x^2\"], \"desmos\": [\"y=x^2\"]}}".
+      Consulta: "${text}"`;
+      let requestBody = { contents: [{ parts: [{ text: prompt }] }] };
+
+      if (image) {
+        const base64Image = image.startsWith('data:image') ? image.split(',')[1] : await fetch(image).then(r => r.blob()).then(blob => new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result.split(',')[1]);
+          reader.readAsDataURL(blob);
+        }));
+        requestBody.contents[0].parts.push({ inlineData: { mimeType: "image/jpeg", data: base64Image } });
+      }
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+      } catch (error) {
+        return `¡Uy, loco! Hubo un problema: ${error.message}.`;
+      }
+    }
+
+    function setupEventListeners() {
+      cameraButton.addEventListener("click", startCamera);
+      captureButton.addEventListener("click", capturePhoto);
+      cancelButton.addEventListener("click", cancelPhoto);
+      sendButton.addEventListener("click", sendMessage);
+      messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      clearButton.addEventListener("click", () => {
+        chatBody.innerHTML = "";
+        addMessage(lang.welcome, "bot");
+        queryCount = 0;
+        exerciseCounter = 0;
+      });
+      downloadButton.addEventListener("click", generateTXT);
+      fileInput.addEventListener("change", () => {
+        if (fileInput.files.length > 0) {
+          processFile(fileInput.files[0]);
+        }
+      });
+    }
+
+    function initApp() {
+      setupEventListeners();
+      addMessage(lang.welcome, "bot");
+    }
+
+    window.onbeforeunload = () => {
+      stopCamera();
+      if (stream) stream.getTracks().forEach(track => track.stop());
+      Object.values(graphCalculators).forEach(calc => calc.destroy());
+    };
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(initApp, 1);
+    } else {
+      document.addEventListener('DOMContentLoaded', initApp);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEP - TuExamPersonal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+  <style>
+    :root {
+      --neon-lime: #ccff00;
+      --neon-cyan: #00ffff;
+      --neon-magenta: #ff00ff;
+      --neon-bg: #1a0033;
+      --neon-text: #ffffff;
+      --neon-border: #00ccff;
+      --neon-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff, 0 0 30px #ccff00;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a0033, #330066);
+      color: var(--neon-text);
+      margin: 0;
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 30px auto;
+      border: 4px solid var(--neon-border);
+      box-shadow: var(--neon-shadow);
+    }
+    header {
+      text-align: center;
+      padding: 15px;
+      border: 2px solid var(--neon-border);
+      border-radius: 12px;
+      box-shadow: var(--neon-shadow);
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--neon-cyan);
+      font-size: 36px;
+      text-shadow: var(--neon-shadow);
+    }
+    h2.subtitulo {
+      font-size: 18px;
+      color: var(--neon-lime);
+    }
+    .menu {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .menu button {
+      background: var(--neon-lime);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: inset 2px 2px 6px rgba(255,255,255,0.3), inset -2px -2px 6px rgba(0,0,0,0.5), var(--neon-shadow);
+      border: none;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .menu button.selected {
+      background: #ffff66;
+      transform: scale(1.05);
+    }
+    .chat-section {
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid var(--neon-border);
+      border-radius: 10px;
+      box-shadow: var(--neon-shadow);
+      overflow: hidden;
+    }
+    .chat-body {
+      height: 50vh;
+      overflow-y: auto;
+      padding: 20px;
+      scroll-behavior: smooth;
+    }
+    .message {
+      margin: 12px 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      max-width: 80%;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .user-message {
+      background: var(--neon-magenta);
+      margin-left: auto;
+      border-bottom-right-radius: 2px;
+    }
+    .bot-message {
+      background: rgba(0, 204, 255, 0.2);
+      margin-right: auto;
+      border-bottom-left-radius: 2px;
+    }
+    .chat-footer {
+      padding: 20px;
+      border-top: 2px solid var(--neon-border);
+      background: rgba(0, 0, 0, 0.7);
+    }
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    textarea {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      resize: none;
+      min-height: 80px;
+      box-shadow: var(--neon-shadow);
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--neon-lime);
+    }
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .action-button {
+      flex: 1;
+      min-width: 120px;
+      background: var(--neon-lime);
+      color: #000;
+      font-weight: bold;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: none;
+      box-shadow: var(--neon-shadow);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .action-button:hover {
+      background: #99cc00;
+      transform: scale(1.05);
+    }
+    .file-input {
+      display: none;
+    }
+    .file-label {
+      display: inline-block;
+      background: var(--neon-lime);
+      color: #000;
+      font-weight: bold;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: none;
+      box-shadow: var(--neon-shadow);
+      cursor: pointer;
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+    }
+    .file-label:hover {
+      background: #99cc00;
+      transform: scale(1.05);
+    }
+    .preview-image {
+      max-width: 200px;
+      margin: 10px auto;
+      display: block;
+      border: 2px solid var(--neon-border);
+      border-radius: 10px;
+    }
+    .video-container {
+      width: 100%;
+      max-width: 400px;
+      height: 300px;
+      margin: 15px auto;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid var(--neon-border);
+      background: #000;
+      position: relative;
+      box-shadow: var(--neon-shadow);
+      display: none;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .camera-controls {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 5px;
+    }
+    .camera-button {
+      background: var(--neon-magenta);
+      color: var(--neon-text);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+      box-shadow: var(--neon-shadow);
+    }
+    .camera-button:hover {
+      background: #cc00cc;
+      transform: scale(1.1);
+    }
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      margin: 0 3px;
+      animation: typing 1s infinite ease-in-out;
+      box-shadow: 0 0 5px var(--neon-cyan);
+    }
+    @keyframes typing {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 20px;
+      border: 2px solid var(--neon-border);
+      border-radius: 12px;
+      box-shadow: var(--neon-shadow);
+    }
+    .exam-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .exam-options select {
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      box-shadow: var(--neon-shadow);
+    }
+    .exam-options select:focus {
+      outline: none;
+      border-color: var(--neon-lime);
+    }
+    /* Nuevos estilos para el examen */
+    .exam-container {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      border: 1px solid var(--neon-border);
+    }
+    .question-container {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-bottom: 1px dashed var(--neon-cyan);
+    }
+    .question-text {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: var(--neon-lime);
+    }
+    .options-container {
+      margin-left: 20px;
+    }
+    .option {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+    .option input {
+      margin-right: 10px;
+    }
+    .timer-container {
+      text-align: center;
+      margin: 10px 0;
+      font-size: 18px;
+      color: var(--neon-cyan);
+      font-weight: bold;
+    }
+    .timer-warning {
+      color: #ffcc00;
+      animation: pulse 1s infinite;
+    }
+    .timer-critical {
+      color: #ff0000;
+      animation: pulse 0.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .finish-exam-btn {
+      background: var(--neon-magenta);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 15px;
+      box-shadow: var(--neon-shadow);
+      transition: all 0.3s;
+    }
+    .finish-exam-btn:hover {
+      background: #cc00cc;
+      transform: scale(1.05);
+    }
+    .results-container {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      border: 1px solid var(--neon-cyan);
+    }
+    .correct-answer {
+      color: #00ff00;
+      font-weight: bold;
+    }
+    .incorrect-answer {
+      color: #ff0000;
+      font-weight: bold;
+    }
+    .feedback-text {
+      margin-top: 5px;
+      font-style: italic;
+      color: var(--neon-cyan);
+    }
+    .score-display {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin: 15px 0;
+      color: var(--neon-lime);
+    }
+    .restart-exam-btn {
+      background: var(--neon-lime);
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 15px;
+      box-shadow: var(--neon-shadow);
+      transition: all 0.3s;
+    }
+    .restart-exam-btn:hover {
+      background: #99cc00;
+      transform: scale(1.05);
+    }
+    .formula {
+      font-family: 'Courier New', monospace;
+      background: rgba(0,0,0,0.3);
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+    .exercise-solution {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(0, 204, 255, 0.1);
+      border-left: 3px solid var(--neon-cyan);
+    }
+    @media (max-width: 768px) {
+      body { padding: 20px 10px; }
+      h1 { font-size: 28px; }
+      .chat-body { height: 40vh; }
+      textarea { font-size: 14px; min-height: 60px; }
+      .action-button, .file-label { font-size: 12px; padding: 10px; min-width: 100%; }
+      .video-container { max-width: 100%; height: 250px; }
+      .menu button, .exam-options select { font-size: 12px; padding: 8px 15px; }
+      .question-container { padding: 8px 5px; }
+      .options-container { margin-left: 10px; }
+      .timer-container { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TEP - TuExamPersonal</h1>
+    <h2 class="subtitulo">¡Creá exámenes personalizados y aprendé con retroalimentación! 📝⚡</h2>
+  </header>
+
+  <div class="menu">
+    <button onclick="seleccionarMateria(this, 'Matemáticas')">📐 Matemáticas</button>
+    <button onclick="seleccionarMateria(this, 'Física')">🧲 Física</button>
+    <button onclick="seleccionarMateria(this, 'Química')">⚗️ Química</button>
+    <button onclick="seleccionarMateria(this, 'Informática')">💻 Informática</button>
+    <button onclick="seleccionarMateria(this, 'Otras')">🌟 Otras</button>
+  </div>
+
+  <div class="chat-section">
+    <div class="chat-body" id="chatBody" role="log" aria-live="polite"></div>
+    <div class="chat-footer">
+      <div class="input-container">
+        <div class="exam-options">
+          <select id="examType">
+            <option value="vf">Verdadero/Falso (V/F)</option>
+            <option value="multiple">Opción Múltiple (OM)</option>
+            <option value="ejercicios">Sólo Ejercicios (SE)</option>
+            <option value="mixto">Mixto (MX)</option>
+          </select>
+          <select id="questionCount">
+            <option value="5">5 preguntas</option>
+            <option value="10">10 preguntas</option>
+            <option value="15">15 preguntas</option>
+          </select>
+        </div>
+        <textarea id="messageInput" rows="3" placeholder="Escribe el tema del examen (ej. Leyes de Newton)..."></textarea>
+        <div class="button-row">
+          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" class="file-input">
+          <label for="fileInput" class="file-label">📎 Archivo</label>
+          <button id="cameraButton" class="action-button">📸 Foto</button>
+          <button id="clearButton" class="action-button">🧹 Limpiar</button>
+          <button id="downloadButton" class="action-button">💾 Descargar</button>
+        </div>
+        <div id="previewContainer"></div>
+        <div id="videoContainer" class="video-container">
+          <video id="video" autoplay></video>
+          <div class="camera-controls">
+            <button id="captureButton" class="camera-button">Capturar</button>
+            <button id="cancelButton" class="camera-button">Cancelar</button>
+          </div>
+        </div>
+        <button id="sendButton" class="action-button">Generar Examen</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 TuExamPersonal | ProfePersonal</p>
+  </footer>
+
+  <script>
+    const API_KEY = 'AIzaSyBui3fQPzbvs0BwKwNIJb6Qo-tvsdzWVkU';
+    const translations = {
+      "es": {
+        header: "TEP - TuExamPersonal",
+        welcome: "¡Hola, loco! Soy TEP, tu creador de exámenes personalizados. Elegí una materia, un tema, el tipo de examen y la cantidad de preguntas, ¡y te armo uno al toque! También podés subir un archivo o sacar una foto para basar el examen en eso. ¿Qué querés probar?",
+        fileUploaded: "¡Subiste el archivo: ${filename}! Vamos a crear un examen basado en su contenido.",
+        photoTaken: "¡Foto sacada, ta perfecta! Ahora genero un examen con eso.",
+        photoCanceled: "Tranqui, cancelamos la foto, ¿qué seguimos?",
+        uploading: "Subiendo archivo...",
+        processing: "Procesando archivo, por favor espera...",
+        uploadComplete: "¡Archivo subido con éxito!",
+        uploadCanceled: "Subida cancelada",
+        uploadError: "Error al subir el archivo",
+        examReady: "¡Examen listo! Responde todas las preguntas y luego presiona el botón 'Finalizar Examen' para ver tus resultados.",
+        examFinished: "Examen finalizado. Aquí están tus resultados:",
+        timeWarning: "¡Atención! Te quedan 10 minutos para finalizar el examen.",
+        timeCritical: "¡Últimos 5 minutos! Revisa tus respuestas.",
+        timeUp: "¡Tiempo terminado! El examen se enviará automáticamente."
+      }
+    };
+
+    // Elementos del DOM
+    const chatBody = document.getElementById("chatBody");
+    const messageInput = document.getElementById("messageInput");
+    const examType = document.getElementById("examType");
+    const questionCount = document.getElementById("questionCount");
+    const fileInput = document.getElementById("fileInput");
+    const cameraButton = document.getElementById("cameraButton");
+    const sendButton = document.getElementById("sendButton");
+    const clearButton = document.getElementById("clearButton");
+    const downloadButton = document.getElementById("downloadButton");
+    const previewContainer = document.getElementById("previewContainer");
+    const videoContainer = document.getElementById("videoContainer");
+    const video = document.getElementById("video");
+    const captureButton = document.getElementById("captureButton");
+    const cancelButton = document.getElementById("cancelButton");
+
+    // Variables globales
+    let stream = null;
+    let capturedImage = null;
+    let queryCount = 0;
+    const maxQueries = 5;
+    const lang = translations["es"];
+    let isTyping = false;
+    let messageCount = 0;
+    let selectedSubject = '';
+    let examCounter = 0;
+    let currentExam = null;
+    let examData = null;
+    let examTimer = null;
+    let timeLeft = 45 * 60; // 45 minutos en segundos
+    let warned10 = false;
+    let warned5 = false;
+
+    // Seleccionar materia
+    function seleccionarMateria(btn, materia) {
+      document.querySelectorAll('.menu button').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedSubject = materia;
+      addMessage(`¡Copado! Ahora estoy en modo ${materia}. Elegí el tipo de examen y el tema.`, "bot");
+    }
+
+    // Agregar mensaje
+    function addMessage(text, type) {
+      if (type === 'bot' && !isTyping) {
+        showTypingIndicator();
+        setTimeout(() => {
+          removeTypingIndicator();
+          addMessageContent(text, type);
+        }, 1000);
+        return;
+      }
+      addMessageContent(text, type);
+    }
+
+    function showTypingIndicator() {
+      isTyping = true;
+      const typingDiv = document.createElement("div");
+      typingDiv.classList.add("message", "bot-message");
+      typingDiv.id = "typingIndicator";
+      const typingContent = document.createElement("div");
+      typingContent.className = "typing-indicator";
+      typingContent.innerHTML = '<span></span><span></span><span></span>';
+      typingDiv.appendChild(typingContent);
+      chatBody.appendChild(typingDiv);
+      scrollToBottom();
+    }
+
+    function removeTypingIndicator() {
+      const typingIndicator = document.getElementById("typingIndicator");
+      if (typingIndicator) typingIndicator.remove();
+      isTyping = false;
+    }
+
+    function addMessageContent(text, type) {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message", type === "user" ? "user-message" : "bot-message");
+      messageDiv.id = `message-${messageCount++}`;
+      
+      // Procesar texto para mantener formato de fórmulas y subíndices
+      let processedText = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/_([^_]+)_/g, '<em>$1</em>')
+        .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+        .replace(/\$\$(.*?)\$\$/g, '<span class="formula">$1</span>')
+        .replace(/q<sub>(\d+)<\/sub>/g, 'q<sub>$1</sub>')
+        .replace(/µC/g, 'µC');
+      
+      messageDiv.innerHTML = processedText;
+      chatBody.appendChild(messageDiv);
+      scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    async function processFile(file) {
+      try {
+        let result = null;
+        if (file.type === "application/pdf") {
+          const text = await extractTextFromPDF(file);
+          addMessage(lang.fileUploaded.replace("${filename}", file.name), "user");
+          result = { text: `Generá un examen de ${examType.value} con ${questionCount.value} preguntas basado en el contenido de este PDF:\n\n${text}`, image: null };
+        } else if (file.type.startsWith("image/")) {
+          const imageUrl = URL.createObjectURL(file);
+          const img = document.createElement("img");
+          img.src = imageUrl;
+          img.classList.add("preview-image");
+          previewContainer.appendChild(img);
+          addMessage(lang.fileUploaded.replace("${filename}", file.name), "user");
+          result = { text: `Generá un examen de ${examType.value} con ${questionCount.value} preguntas basado en el contenido de esta imagen.`, image: imageUrl };
+        } else {
+          throw new Error("Formato de archivo no soportado");
+        }
+        return result;
+      } catch (error) {
+        addMessage(`¡Uy, loco! Error al procesar el archivo: ${error.message}`, "bot");
+        return null;
+      }
+    }
+
+    async function extractTextFromPDF(file) {
+      try {
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js';
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+        let text = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          text += content.items.map(item => item.str).join(' ') + '\n';
+        }
+        return text;
+      } catch (error) {
+        throw new Error("No se pudo leer el PDF.");
+      }
+    }
+
+    async function startCamera() {
+      try {
+        if (stream) stopCamera();
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { width: { ideal: 800 }, height: { ideal: 800 }, facingMode: 'environment' } 
+        });
+        video.srcObject = stream;
+        videoContainer.style.display = "block";
+        scrollToBottom();
+      } catch (error) {
+        addMessage(`¡Uy, loco! Error con la cámara: ${error.message}`, "bot");
+      }
+    }
+
+    function capturePhoto() {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0);
+        capturedImage = canvas.toDataURL("image/jpeg");
+        const img = document.createElement("img");
+        img.src = capturedImage;
+        img.classList.add("preview-image");
+        previewContainer.appendChild(img);
+        stopCamera();
+        addMessage(lang.photoTaken, "user");
+      } catch (error) {
+        addMessage("¡No pude capturar la foto!", "bot");
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        videoContainer.style.display = "none";
+        video.srcObject = null;
+        stream = null;
+      }
+    }
+
+    function cancelPhoto() {
+      stopCamera();
+      addMessage(lang.photoCanceled, "user");
+      capturedImage = null;
+    }
+
+    function startTimer() {
+      clearInterval(examTimer);
+      timeLeft = 45 * 60; // 45 minutos en segundos
+      warned10 = false;
+      warned5 = false;
+      
+      // Crear contenedor del temporizador
+      const timerDiv = document.createElement("div");
+      timerDiv.className = "timer-container";
+      timerDiv.id = "examTimer";
+      updateTimerDisplay(timerDiv);
+      
+      const examContainer = document.getElementById("currentExam");
+      examContainer.insertBefore(timerDiv, examContainer.firstChild);
+      
+      examTimer = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay(timerDiv);
+        
+        // Notificaciones de tiempo
+        if (timeLeft === 10 * 60 && !warned10) {
+          warned10 = true;
+          addMessage(lang.timeWarning, "bot");
+        } else if (timeLeft === 5 * 60 && !warned5) {
+          warned5 = true;
+          addMessage(lang.timeCritical, "bot");
+        } else if (timeLeft <= 0) {
+          clearInterval(examTimer);
+          addMessage(lang.timeUp, "bot");
+          finishExam();
+        }
+      }, 1000);
+    }
+    
+    function updateTimerDisplay(timerDiv) {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      
+      // Cambiar color según el tiempo restante
+      if (timeLeft <= 5 * 60) {
+        timerDiv.className = "timer-container timer-critical";
+      } else if (timeLeft <= 10 * 60) {
+        timerDiv.className = "timer-container timer-warning";
+      } else {
+        timerDiv.className = "timer-container";
+      }
+      
+      timerDiv.textContent = `Tiempo restante: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function generateTXT() {
+      try {
+        const today = new Date();
+        const dateString = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth()+1).toString().padStart(2, '0')}/${today.getFullYear()} ${today.getHours().toString().padStart(2, '0')}:${today.getMinutes().toString().padStart(2, '0')}`;
+        let content = "==================================================\n";
+        content += "         TEP - TuExamPersonal         \n";
+        content += `               Generado el: ${dateString}               \n`;
+        content += "==================================================\n\n";
+
+        // Agregar información del examen
+        if (examData) {
+          content += `Materia: ${selectedSubject || 'No especificada'}\n`;
+          content += `Tipo de examen: ${getExamTypeName(examData.type)}\n`;
+          content += `Número de preguntas: ${examData.questions.length}\n\n`;
+          
+          // Agregar preguntas y respuestas
+          content += "=== PREGUNTAS ===\n\n";
+          examData.questions.forEach((question, index) => {
+            content += `Pregunta ${question.number}: ${question.text}\n`;
+            
+            if (examData.type === "vf" || examData.type === "multiple") {
+              if (question.options && question.options.length > 0) {
+                question.options.forEach((option, i) => {
+                  const optionLetter = String.fromCharCode(97 + i);
+                  content += `${optionLetter}) ${option}\n`;
+                });
+              } else if (examData.type === "vf") {
+                content += "Verdadero / Falso\n";
+              }
+            }
+            
+            content += "\n";
+          });
+          
+          // Agregar respuestas y retroalimentación
+          content += "=== RESPUESTAS Y RETROALIMENTACIÓN ===\n\n";
+          examData.questions.forEach((question, index) => {
+            content += `Pregunta ${question.number}:\n`;
+            content += `Tu respuesta: ${question.userAnswer || "Sin responder"}\n`;
+            content += `Respuesta correcta: ${question.correctAnswer}\n`;
+            content += `Retroalimentación: ${question.feedback}\n\n`;
+          });
+          
+          // Calcular puntaje
+          let score = 0;
+          examData.questions.forEach(question => {
+            if (isAnswerCorrect(question, examData.type)) {
+              score++;
+            }
+          });
+          
+          const percentage = Math.round((score / examData.questions.length) * 100);
+          content += `Puntaje final: ${score}/${examData.questions.length} (${percentage}%)\n\n`;
+        }
+
+        content += "\n==================================================\n";
+        content += "¡Gracias por usar ProfePersonal! 🚀\n";
+        content += "Seguinos en nuestras redes para más tips y recursos educativos:\n";
+        content += "📸 Instagram: @ProfePersonalUy\n";
+        content += "🎥 TikTok: @ProfePersonalUy\n";
+        content += "✖️ X: @ProfePersonalUy\n";
+        content += "==================================================\n";
+
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const fileName = `TEP_${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}.txt`;
+        saveAs(blob, fileName);
+      } catch (error) {
+        addMessage("¡Uy, loco! Hubo un error al generar el archivo.", "bot");
+      }
+    }
+    
+    function getExamTypeName(type) {
+      switch(type) {
+        case "vf": return "Verdadero/Falso (V/F)";
+        case "multiple": return "Opción Múltiple (OM)";
+        case "ejercicios": return "Sólo Ejercicios (SE)";
+        case "mixto": return "Mixto (MX)";
+        default: return type;
+      }
+    }
+    
+    function isAnswerCorrect(question, examType) {
+      if (!question.userAnswer) return false;
+      
+      const userAnswer = question.userAnswer.toLowerCase().trim();
+      const correctAnswer = question.correctAnswer.toLowerCase().trim();
+      
+      if (examType === "vf") {
+        return (userAnswer === "verdadero" && correctAnswer.includes("verdadero")) || 
+               (userAnswer === "falso" && correctAnswer.includes("falso"));
+      } else if (examType === "multiple") {
+        return userAnswer === correctAnswer.charAt(0).toLowerCase();
+      }
+      
+      return false;
+    }
+
+    function parseExamResponse(response) {
+      const questions = [];
+      const questionRegex = /Pregunta (\d+):\s*(.*?)(?=(Pregunta \d+:|Respuesta correcta:|$))/gs;
+      const answerRegex = /Respuesta correcta:\s*(.*?)(?=(Retroalimentación:|Pregunta \d+:|$))/gs;
+      const feedbackRegex = /Retroalimentación:\s*(.*?)(?=(Pregunta \d+:|$))/gs;
+      
+      let questionMatch;
+      while ((questionMatch = questionRegex.exec(response)) !== null) {
+        const questionNumber = questionMatch[1];
+        let questionText = questionMatch[2].trim();
+        
+        // Buscar la respuesta correspondiente
+        answerRegex.lastIndex = questionMatch.index;
+        const answerMatch = answerRegex.exec(response);
+        let correctAnswer = answerMatch ? answerMatch[1].trim() : "";
+        
+        // Buscar la retroalimentación correspondiente
+        feedbackRegex.lastIndex = questionMatch.index;
+        const feedbackMatch = feedbackRegex.exec(response);
+        const feedback = feedbackMatch ? feedbackMatch[1].trim() : "";
+        
+        // Procesar respuestas de Verdadero/Falso
+        if (examType.value === "vf") {
+          // Extraer la respuesta correcta del texto de la pregunta si está en formato "Verdadero/Falso: Verdadero"
+          const vfRegex = /Verdadero\/Falso:\s*(Verdadero|Falso)/i;
+          const vfMatch = questionText.match(vfRegex);
+          if (vfMatch) {
+            correctAnswer = vfMatch[1];
+            questionText = questionText.replace(vfRegex, "").trim();
+          }
+        }
+        
+        // Extraer opciones si es de opción múltiple
+        let options = [];
+        if (examType.value === "multiple") {
+          const optionRegex = /^[a-d]\)\s*(.*)$/gm;
+          let optionMatch;
+          while ((optionMatch = optionRegex.exec(questionText)) !== null) {
+            options.push(optionMatch[1].trim());
+          }
+        }
+        
+        questions.push({
+          number: questionNumber,
+          text: questionText.replace(/^[a-d]\)\s*(.*)$/gm, "").trim(), // Eliminar opciones del texto
+          options: options,
+          correctAnswer: correctAnswer.replace("**", "").replace("**", "").trim(),
+          feedback: feedback,
+          userAnswer: null
+        });
+      }
+      
+      return questions;
+    }
+
+    function renderExam(questions) {
+      const examDiv = document.createElement("div");
+      examDiv.className = "exam-container";
+      examDiv.id = "currentExam";
+      
+      questions.forEach((question, index) => {
+        const questionDiv = document.createElement("div");
+        questionDiv.className = "question-container";
+        
+        const questionText = document.createElement("div");
+        questionText.className = "question-text";
+        questionText.innerHTML = `Pregunta ${question.number}: ${question.text}`;
+        questionDiv.appendChild(questionText);
+        
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options-container";
+        
+        if (examType.value === "vf") {
+          // Opciones Verdadero/Falso
+          const trueOption = createOption(`q${question.number}`, "Verdadero", "verdadero", question);
+          const falseOption = createOption(`q${question.number}`, "Falso", "falso", question);
+          optionsDiv.appendChild(trueOption);
+          optionsDiv.appendChild(falseOption);
+        } else if (examType.value === "multiple") {
+          // Opciones múltiples
+          question.options.forEach((option, i) => {
+            const optionLetter = String.fromCharCode(97 + i); // a, b, c, d
+            const optionElement = createOption(`q${question.number}`, `${optionLetter}) ${option}`, optionLetter, question);
+            optionsDiv.appendChild(optionElement);
+          });
+        } else if (examType.value === "ejercicios" || examType.value === "mixto") {
+          // Pregunta de ejercicio (área de texto)
+          const textarea = document.createElement("textarea");
+          textarea.placeholder = "Escribe tu solución aquí...";
+          textarea.dataset.questionNumber = question.number;
+          textarea.className = "open-answer";
+          textarea.rows = 4;
+          optionsDiv.appendChild(textarea);
+        }
+        
+        questionDiv.appendChild(optionsDiv);
+        examDiv.appendChild(questionDiv);
+      });
+      
+      const finishButton = document.createElement("button");
+      finishButton.className = "finish-exam-btn";
+      finishButton.textContent = "Finalizar Examen";
+      finishButton.onclick = finishExam;
+      examDiv.appendChild(finishButton);
+      
+      chatBody.appendChild(examDiv);
+      scrollToBottom();
+      
+      // Iniciar temporizador
+      startTimer();
+      
+      return examDiv;
+    }
+
+    function createOption(name, label, value, question) {
+      const optionDiv = document.createElement("div");
+      optionDiv.className = "option";
+      
+      const input = document.createElement("input");
+      input.type = examType.value === "multiple" ? "radio" : "radio";
+      input.name = name;
+      input.value = value;
+      input.id = `${name}_${value}`;
+      input.onchange = () => {
+        question.userAnswer = value;
+      };
+      
+      const labelElement = document.createElement("label");
+      labelElement.htmlFor = `${name}_${value}`;
+      labelElement.textContent = label;
+      
+      optionDiv.appendChild(input);
+      optionDiv.appendChild(labelElement);
+      
+      return optionDiv;
+    }
+
+    function finishExam() {
+      // Detener el temporizador
+      clearInterval(examTimer);
+      const timerDiv = document.getElementById("examTimer");
+      if (timerDiv) timerDiv.remove();
+      
+      // Recoger respuestas del usuario
+      const examContainer = document.getElementById("currentExam");
+      const questions = examData.questions;
+      
+      // Para preguntas abiertas y ejercicios
+      if (examType.value === "ejercicios" || examType.value === "mixto") {
+        const textareas = examContainer.querySelectorAll(".open-answer");
+        textareas.forEach(textarea => {
+          const questionNumber = textarea.dataset.questionNumber;
+          const question = questions.find(q => q.number === questionNumber);
+          if (question) {
+            question.userAnswer = textarea.value.trim();
+          }
+        });
+      }
+      
+      // Calcular puntaje (solo para V/F y OM)
+      let score = 0;
+      let totalScorable = 0;
+      questions.forEach(question => {
+        if (examType.value === "vf" || examType.value === "multiple") {
+          totalScorable++;
+          if (isAnswerCorrect(question, examType.value)) {
+            score++;
+          }
+        }
+      });
+      
+      const percentage = totalScorable > 0 ? Math.round((score / totalScorable) * 100) : 0;
+      
+      // Mostrar resultados
+      const resultsDiv = document.createElement("div");
+      resultsDiv.className = "results-container";
+      resultsDiv.id = "examResults";
+      
+      if (totalScorable > 0) {
+        const scoreDisplay = document.createElement("div");
+        scoreDisplay.className = "score-display";
+        scoreDisplay.textContent = `Puntaje: ${score}/${totalScorable} (${percentage}%)`;
+        resultsDiv.appendChild(scoreDisplay);
+      }
+      
+      questions.forEach(question => {
+        const questionResult = document.createElement("div");
+        questionResult.className = "question-container";
+        
+        const questionText = document.createElement("div");
+        questionText.className = "question-text";
+        questionText.innerHTML = `Pregunta ${question.number}: ${question.text}`;
+        questionResult.appendChild(questionText);
+        
+        const userAnswerDiv = document.createElement("div");
+        userAnswerDiv.textContent = `Tu respuesta: ${question.userAnswer || "Sin responder"}`;
+        
+        // Determinar si la respuesta es correcta (solo para V/F y OM)
+        if (examType.value === "vf" || examType.value === "multiple") {
+          userAnswerDiv.className = isAnswerCorrect(question, examType.value) ? "correct-answer" : "incorrect-answer";
+        }
+        questionResult.appendChild(userAnswerDiv);
+        
+        const correctAnswerDiv = document.createElement("div");
+        correctAnswerDiv.textContent = `Respuesta correcta: ${question.correctAnswer}`;
+        questionResult.appendChild(correctAnswerDiv);
+        
+        const feedbackDiv = document.createElement("div");
+        feedbackDiv.className = "feedback-text";
+        feedbackDiv.innerHTML = question.feedback;
+        questionResult.appendChild(feedbackDiv);
+        
+        // Mostrar solución para ejercicios
+        if ((examType.value === "ejercicios" || examType.value === "mixto") && question.feedback) {
+          const solutionDiv = document.createElement("div");
+          solutionDiv.className = "exercise-solution";
+          solutionDiv.innerHTML = `<strong>Solución:</strong> ${question.feedback}`;
+          questionResult.appendChild(solutionDiv);
+        }
+        
+        resultsDiv.appendChild(questionResult);
+      });
+      
+      const restartButton = document.createElement("button");
+      restartButton.className = "restart-exam-btn";
+      restartButton.textContent = "Hacer otro examen";
+      restartButton.onclick = () => {
+        examContainer.remove();
+        resultsDiv.remove();
+        messageInput.focus();
+      };
+      resultsDiv.appendChild(restartButton);
+      
+      chatBody.appendChild(resultsDiv);
+      scrollToBottom();
+      
+      // Mostrar resultados
+      resultsDiv.style.display = "block";
+      addMessage(lang.examFinished, "bot");
+    }
+
+    async function sendMessage() {
+      try {
+        let messageText = messageInput.value.trim();
+        let finalMessage = { text: messageText, image: null };
+        
+        if (queryCount >= maxQueries) {
+          addMessage("¡Pará, loco! Llegaste al límite de 5 exámenes.", "bot");
+          return;
+        }
+        
+        if (!messageText && !fileInput.files.length && !capturedImage) return;
+
+        if (fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          finalMessage = await processFile(file) || finalMessage;
+          fileInput.value = "";
+        } else if (capturedImage) {
+          finalMessage = { text: `Generá un examen de ${examType.value} con ${questionCount.value} preguntas basado en el contenido de esta foto.`, image: capturedImage };
+        } else {
+          finalMessage = { text: `Tema: ${messageText}` };
+          addMessage(`Tema: ${messageText}`, "user");
+        }
+
+        if (finalMessage.text || finalMessage.image) {
+          messageInput.value = "";
+          previewContainer.innerHTML = "";
+          capturedImage = null;
+          
+          // Eliminar examen anterior si existe
+          const existingExam = document.getElementById("currentExam");
+          if (existingExam) existingExam.remove();
+          
+          const existingResults = document.getElementById("examResults");
+          if (existingResults) existingResults.remove();
+          
+          const botResponse = await getTEPResponse(finalMessage.text, finalMessage.image);
+          
+          // Parsear y renderizar el examen
+          examData = {
+            questions: parseExamResponse(botResponse),
+            type: examType.value,
+            subject: selectedSubject
+          };
+          
+          renderExam(examData.questions);
+          addMessage(lang.examReady, "bot");
+          
+          queryCount++;
+        }
+      } catch (error) {
+        addMessage(`¡Qué macana! Error: ${error.message}`, "bot");
+      }
+    }
+
+    async function getTEPResponse(text, image) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+      const examTypeText = getExamTypeName(examType.value);
+      const prompt = `Eres TEP, un generador de exámenes personalizados para ${selectedSubject || 'todas las materias'}. Responde en español uruguayo, con un tono didáctico y claro, como un profe de liceo. Generá un examen de ${examTypeText} con ${questionCount.value} preguntas sobre el tema o contenido proporcionado. 
+      
+      Instrucciones específicas:
+      - Para V/F: Cada pregunta debe terminar con "Verdadero/Falso: [Respuesta]"
+      - Para OM: Incluir 4 opciones claras (a, b, c, d)
+      - Para SE: Generar ejercicios prácticos con solución detallada
+      - Para MX: Mezclar diferentes tipos de preguntas
+      
+      Cada pregunta debe incluir:
+      - Enunciado claro
+      - Respuesta correcta
+      - Retroalimentación detallada explicando por qué es correcta o incorrecta
+      
+      Formato:
+      **Pregunta 1:** [Enunciado]
+      [Opciones, si aplica]
+      **Respuesta correcta:** [Respuesta]
+      **Retroalimentación:** [Explicación]
+      
+      Consulta: "${text}"`;
+      
+      let requestBody = { contents: [{ parts: [{ text: prompt }] }] };
+
+      if (image) {
+        const base64Image = image.startsWith('data:image') ? image.split(',')[1] : await fetch(image).then(r => r.blob()).then(blob => new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result.split(',')[1]);
+          reader.readAsDataURL(blob);
+        }));
+        requestBody.contents[0].parts.push({ inlineData: { mimeType: "image/jpeg", data: base64Image } });
+      }
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+      } catch (error) {
+        return `¡Uy, loco! Hubo un problema: ${error.message}.`;
+      }
+    }
+
+    function setupEventListeners() {
+      cameraButton.addEventListener("click", startCamera);
+      captureButton.addEventListener("click", capturePhoto);
+      cancelButton.addEventListener("click", cancelPhoto);
+      sendButton.addEventListener("click", sendMessage);
+      messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      clearButton.addEventListener("click", () => {
+        chatBody.innerHTML = "";
+        addMessage(lang.welcome, "bot");
+        queryCount = 0;
+        examCounter = 0;
+        clearInterval(examTimer);
+      });
+      downloadButton.addEventListener("click", generateTXT);
+      fileInput.addEventListener("change", () => {
+        if (fileInput.files.length > 0) {
+          processFile(fileInput.files[0]);
+        }
+      });
+    }
+
+    function initApp() {
+      setupEventListeners();
+      addMessage(lang.welcome, "bot");
+    }
+
+    window.onbeforeunload = () => {
+      stopCamera();
+      if (stream) stream.getTracks().forEach(track => track.stop());
+      clearInterval(examTimer);
+    };
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(initApp, 1);
+    } else {
+      document.addEventListener('DOMContentLoaded', initApp);
+    }
+  </script>
+</body>
+</html>

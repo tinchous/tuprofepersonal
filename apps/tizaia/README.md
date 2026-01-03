@@ -1,0 +1,2 @@
+﻿# App TizaIA (placeholder)
+

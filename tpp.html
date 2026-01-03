@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TPP - TuProfePersonal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --neon-lime: #ccff00;
+      --neon-cyan: #00ffff;
+      --neon-magenta: #ff00ff;
+      --neon-bg: #1a0033;
+      --neon-text: #ffffff;
+      --neon-border: #00ccff;
+      --neon-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff, 0 0 30px #ccff00;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a0033, #330066);
+      color: var(--neon-text);
+      margin: 0;
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 30px auto;
+      border: 4px solid var(--neon-border);
+      box-shadow: var(--neon-shadow);
+    }
+    header {
+      text-align: center;
+      padding: 15px;
+      border: 2px solid var(--neon-border);
+      border-radius: 12px;
+      box-shadow: var(--neon-shadow);
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--neon-cyan);
+      font-size: 36px;
+      text-shadow: var(--neon-shadow);
+    }
+    h2.subtitulo {
+      font-size: 18px;
+      color: var(--neon-lime);
+    }
+    .board-section {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid var(--neon-border);
+      border-radius: 10px;
+      box-shadow: var(--neon-shadow);
+      padding: 20px;
+      min-height: 50vh;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+    .board-content {
+      font-size: 18px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      color: var(--neon-lime);
+    }
+    .board-footer {
+      padding: 20px;
+      border-top: 2px solid var(--neon-border);
+      background: rgba(0, 0, 0, 0.7);
+    }
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .action-button {
+      flex: 1;
+      min-width: 120px;
+      background: var(--neon-lime);
+      color: #000;
+      font-weight: bold;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: none;
+      box-shadow: var(--neon-shadow);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .action-button:hover {
+      background: #99cc00;
+      transform: scale(1.05);
+    }
+    .file-input {
+      display: none;
+    }
+    .file-label {
+      display: inline-block;
+      background: var(--neon-lime);
+      color: #000;
+      font-weight: bold;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: none;
+      box-shadow: var(--neon-shadow);
+      cursor: pointer;
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+    }
+    .file-label:hover {
+      background: #99cc00;
+      transform: scale(1.05);
+    }
+    .preview-image {
+      max-width: 200px;
+      margin: 10px auto;
+      display: block;
+      border: 2px solid var(--neon-border);
+      border-radius: 10px;
+    }
+    .video-container {
+      width: 100%;
+      max-width: 400px;
+      height: 300px;
+      margin: 15px auto;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid var(--neon-border);
+      background: #000;
+      position: relative;
+      box-shadow: var(--neon-shadow);
+      display: none;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .camera-controls {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 5px;
+    }
+    .camera-button {
+      background: var(--neon-magenta);
+      color: var(--neon-text);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+      box-shadow: var(--neon-shadow);
+    }
+    .camera-button:hover {
+      background: #cc00cc;
+      transform: scale(1.1);
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 20px;
+      border: 2px solid var(--neon-border);
+      border-radius: 12px;
+      box-shadow: var(--neon-shadow);
+    }
+    @media (max-width: 768px) {
+      body { padding: 20px 10px; }
+      h1 { font-size: 28px; }
+      .board-section { min-height: 40vh; }
+      .action-button, .file-label { font-size: 12px; padding: 10px; min-width: 100%; }
+      .board-content { font-size: 16px; }
+      .video-container { max-width: 100%; height: 250px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TPP - TuProfePersonal</h1>
+    <h2 class="subtitulo">¡Clases virtuales con ElProfeTino! 🎙️⚡</h2>
+  </header>
+
+  <div class="board-section">
+    <div class="board-content" id="boardContent"></div>
+  </div>
+
+  <div class="board-footer">
+    <div class="input-container">
+      <div class="button-row">
+        <input type="file" id="fileInput" accept=".txt,.png,.jpg,.jpeg" class="file-input">
+        <label for="fileInput" class="file-label">📎 Archivo</label>
+        <button id="cameraButton" class="action-button">📸 Foto</button>
+      </div>
+      <div id="previewContainer"></div>
+      <div id="videoContainer" class="video-container">
+        <video id="video" autoplay></video>
+        <div class="camera-controls">
+          <button id="captureButton" class="camera-button">Capturar</button>
+          <button id="cancelButton" class="camera-button">Cancelar</button>
+        </div>
+      </div>
+      <div class="button-row">
+        <button id="startButton" class="action-button">Iniciar Clase</button>
+        <button id="stopButton" class="action-button" disabled>Detener Clase</button>
+        <button id="txtButton" class="action-button">Descargar TXT</button>
+        <button id="mp3Button" class="action-button">Descargar MP3</button>
+        <button id="mp4Button" class="action-button">Descargar MP4</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 TuProfePersonal | ProfePersonal</p>
+  </footer>
+
+  <script>
+    const API_KEY = 'AIzaSyBui3fQPzbvs0BwKwNIJb6Qo-tvsdzWVkU';
+    const translations = {
+      "es": {
+        header: "TPP - TuProfePersonal",
+        welcome: "¡Hola! Soy ElProfeTino, tu profe virtual. Preparate para una clase zarpada sobre el tema que elegiste. ¡Subí un archivo, sacá una foto o dale al botón para empezar!",
+        noContent: "¡Uy, loco! No hay contenido para la clase. Subí un archivo, sacá una foto o volvé a TizaIA, TEP o GTE.",
+        error: "¡Qué macana! Hubo un problema generando la clase.",
+        fileUploaded: "¡Subiste el archivo: ${filename}! Preparando la clase...",
+        photoTaken: "¡Foto sacada, ta perfecta! Preparando la clase..."
+      }
+    };
+
+    // Elementos del DOM
+    const boardContent = document.getElementById("boardContent");
+    const startButton = document.getElementById("startButton");
+    const stopButton = document.getElementById("stopButton");
+    const txtButton = document.getElementById("txtButton");
+    const mp3Button = document.getElementById("mp3Button");
+    const mp4Button = document.getElementById("mp4Button");
+    const fileInput = document.getElementById("fileInput");
+    const cameraButton = document.getElementById("cameraButton");
+    const previewContainer = document.getElementById("previewContainer");
+    const videoContainer = document.getElementById("videoContainer");
+    const video = document.getElementById("video");
+    const captureButton = document.getElementById("captureButton");
+    const cancelButton = document.getElementById("cancelButton");
+
+    // Variables globales
+    const lang = translations["es"];
+    let classText = "";
+    let isSpeaking = false;
+    let utterance = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let classSummary = "";
+    let classContent = localStorage.getItem('classContent') || "";
+    let classSubject = localStorage.getItem('classSubject') || "Otras";
+    let classFileContent = localStorage.getItem('classFileContent') || "";
+    let stream = null;
+    let capturedImage = null;
+
+    // Filtrar contenido de TXT
+    function filterTXTContent(text) {
+      const lines = text.split('\n');
+      let filteredContent = '';
+      let skipHeader = true;
+      let skipFooter = false;
+      lines.forEach(line => {
+        if (line.startsWith('========')) {
+          if (skipHeader) {
+            skipHeader = false;
+          } else {
+            skipFooter = true;
+          }
+          return;
+        }
+        if (skipHeader || skipFooter) return;
+        if (line.startsWith('Usuario:') || line.includes('¡Subiste el archivo') || line.includes('¡Foto sacada') || line.includes('Ir a Clase')) {
+          return;
+        }
+        if (line.startsWith('TizaIA:') || line.startsWith('TEP:') || line.startsWith('GTE:')) {
+          filteredContent += line.replace(/^(TizaIA|TEP|GTE):/, '') + '\n';
+        } else if (!line.startsWith('----')) {
+          filteredContent += line + '\n';
+        }
+      });
+      return filteredContent.trim();
+    }
+
+    // Procesar archivo
+    async function processFile(file) {
+      try {
+        if (file.type === "text/plain") {
+          const text = await file.text();
+          const filteredText = filterTXTContent(text);
+          classContent = filteredText;
+          classFileContent = filteredText;
+          classSubject = text.includes('TizaIA') ? 'Matemáticas' : text.includes('TEP') ? 'Física' : 'Otras';
+          boardContent.textContent = lang.fileUploaded.replace('${filename}', file.name);
+          localStorage.setItem('classContent', classContent);
+          localStorage.setItem('classSubject', classSubject);
+          localStorage.setItem('classFileContent', classFileContent);
+        } else if (file.type.startsWith("image/")) {
+          const imageUrl = URL.createObjectURL(file);
+          const img = document.createElement("img");
+          img.src = imageUrl;
+          img.classList.add("preview-image");
+          previewContainer.appendChild(img);
+          classContent = `Clase basada en la imagen: ${file.name}`;
+          classFileContent = imageUrl;
+          boardContent.textContent = lang.fileUploaded.replace('${filename}', file.name);
+          localStorage.setItem('classContent', classContent);
+          localStorage.setItem('classFileContent', classFileContent);
+        } else {
+          throw new Error("Formato de archivo no soportado");
+        }
+        await generateClass();
+      } catch (error) {
+        boardContent.textContent = `¡Uy, loco! Error al procesar el archivo: ${error.message}`;
+      }
+    }
+
+    // Capturar foto
+    async function startCamera() {
+      try {
+        if (stream) stopCamera();
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { width: { ideal: 800 }, height: { ideal: 800 }, facingMode: 'environment' } 
+        });
+        video.srcObject = stream;
+        videoContainer.style.display = "block";
+        boardContent.scrollTop = boardContent.scrollHeight;
+      } catch (error) {
+        boardContent.textContent = `¡Uy, loco! Error con la cámara: ${error.message}`;
+      }
+    }
+
+    function capturePhoto() {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0);
+        capturedImage = canvas.toDataURL("image/jpeg");
+        const img = document.createElement("img");
+        img.src = capturedImage;
+        img.classList.add("preview-image");
+        previewContainer.appendChild(img);
+        stopCamera();
+        classContent = "Clase basada en una foto capturada";
+        classFileContent = capturedImage;
+        boardContent.textContent = lang.photoTaken;
+        localStorage.setItem('classContent', classContent);
+        localStorage.setItem('classFileContent', classFileContent);
+        generateClass();
+      } catch (error) {
+        boardContent.textContent = "¡No pude capturar la foto!";
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        videoContainer.style.display = "none";
+        video.srcObject = null;
+        stream = null;
+      }
+    }
+
+    function cancelPhoto() {
+      stopCamera();
+      boardContent.textContent = lang.welcome;
+      capturedImage = null;
+      localStorage.removeItem('classFileContent');
+    }
+
+    // Simular escritura
+    function typeText(text, callback) {
+      let index = 0;
+      boardContent.textContent = "";
+      const typingSpeed = 50; // ms por carácter
+      function type() {
+        if (index < text.length) {
+          boardContent.textContent += text[index];
+          index++;
+          boardContent.scrollTop = boardContent.scrollHeight;
+          setTimeout(type, typingSpeed);
+        } else if (callback) {
+          callback();
+        }
+      }
+      type();
+    }
+
+    // Generar clase
+    async function generateClass() {
+      if (!classContent && !classFileContent) {
+        boardContent.textContent = lang.noContent;
+        return;
+      }
+      try {
+        const response = await getTPPResponse(classContent, classFileContent);
+        classText = response;
+        classSummary = generateSummary(response);
+        boardContent.textContent = lang.welcome;
+      } catch (error) {
+        boardContent.textContent = `${lang.error}: ${error.message}`;
+      }
+    }
+
+    async function getTPPResponse(content, fileContent) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+      let prompt = `Eres ElProfeTino, un profe virtual para ${classSubject}. Responde en español uruguayo, con un tono didáctico, claro y entusiasta, como un profe de liceo. Crea una clase virtual basada en el siguiente contenido, sin leerlo palabra por palabra. Explicá los conceptos de forma detallada, con ejemplos prácticos, y destacá los conceptos clave diciendo "Repito" y repitiendo el concepto. Iniciá la clase con: "¡Hola! Soy ElProfeTino, tu profe virtual. Hoy vamos a hablar de [tema]." Formato narrativo, como si estuvieras hablando. Contenido: "${content}"`;
+      
+      if (fileContent && fileContent.startsWith('data:image')) {
+        prompt = `Eres ElProfeTino, un profe virtual para ${classSubject}. Responde en español uruguayo, con un tono didáctico, claro y entusiasta. Crea una clase virtual basada en la imagen proporcionada, explicando los conceptos relacionados de forma detallada, con ejemplos prácticos, y destacá los conceptos clave diciendo "Repito" y repitiendo el concepto. Iniciá la clase con: "¡Hola! Soy ElProfeTino, tu profe virtual. Hoy vamos a hablar de los temas que se ven en esta imagen." Formato narrativo.`;
+      } else if (fileContent) {
+        prompt = `Eres ElProfeTino, un profe virtual para ${classSubject}. Responde en español uruguayo, con un tono didáctico, claro y entusiasta. Crea una clase virtual basada en el siguiente contenido de un archivo, sin leerlo palabra por palabra. Ignorá diálogos de usuario, encabezados y pies de página. Explicá los conceptos de forma detallada, con ejemplos prácticos, y destacá los conceptos clave diciendo "Repito" y repitiendo el concepto. Iniciá la clase con: "¡Hola! Soy ElProfeTino, tu profe virtual. Hoy vamos a hablar de [tema]." Formato narrativo. Contenido: "${fileContent}"`;
+      }
+
+      let requestBody = { contents: [{ parts: [{ text: prompt }] }] };
+      if (fileContent && fileContent.startsWith('data:image')) {
+        const base64Image = fileContent.split(',')[1];
+        requestBody.contents[0].parts.push({ inlineData: { mimeType: "image/jpeg", data: base64Image } });
+      }
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+      } catch (error) {
+        throw new Error(`Error generando la clase: ${error.message}`);
+      }
+    }
+
+    // Generar resumen para TXT
+    function generateSummary(text) {
+      const lines = text.split('\n').filter(line => line.trim());
+      let summary = `Resumen de la clase:\n`;
+      let keyConcepts = [];
+      lines.forEach(line => {
+        if (line.includes("Repito")) {
+          const concept = line.split("Repito")[1]?.trim() || "";
+          if (concept) keyConcepts.push(concept);
+        }
+      });
+      summary += keyConcepts.length ? `Conceptos clave:\n${keyConcepts.map(c => `- ${c}`).join('\n')}\n` : "No se identificaron conceptos clave.\n";
+      return summary;
+    }
+
+    // Iniciar clase
+    function startClass() {
+      if (!classText) return;
+      isSpeaking = true;
+      startButton.disabled = true;
+      stopButton.disabled = false;
+
+      // Configurar voz
+      utterance = new SpeechSynthesisUtterance(classText);
+      utterance.lang = 'es-UY';
+      utterance.rate = 1.0;
+      utterance.onend = () => {
+        isSpeaking = false;
+        startButton.disabled = false;
+        stopButton.disabled = true;
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+        }
+      };
+
+      // Simular escritura
+      typeText(classText, () => {
+        // Finalizar escritura
+      });
+
+      // Iniciar grabación para MP3/MP4
+      const canvasStream = document.createElement('canvas').captureStream();
+      const audioContext = new AudioContext();
+      const destination = audioContext.createMediaStreamDestination();
+      mediaRecorder = new MediaRecorder(destination.stream);
+      recordedChunks = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) recordedChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'audio/mpeg' });
+        const url = URL.createObjectURL(blob);
+        mp3Button.onclick = () => {
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `Clase_ElProfeTino_${new Date().toISOString().split('T')[0]}.mp3`;
+          a.click();
+        };
+      };
+
+      mediaRecorder.start();
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Detener clase
+    function stopClass() {
+      if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+        }
+        isSpeaking = false;
+        startButton.disabled = false;
+        stopButton.disabled = true;
+      }
+    }
+
+    // Descargar TXT
+    function generateTXT() {
+      try {
+        const today = new Date();
+        const dateString = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth()+1).toString().padStart(2, '0')}/${today.getFullYear()} ${today.getHours().toString().padStart(2, '0')}:${today.getMinutes().toString().padStart(2, '0')}`;
+        let content = "==================================================\n";
+        content += "         TPP - TuProfePersonal         \n";
+        content += `               Generado el: ${dateString}               \n`;
+        content += "==================================================\n\n";
+        content += `=== Clase: ${classSubject} ===\n`;
+        content += classSummary;
+        content += "\n==================================================\n";
+        content += "¡Gracias por usar ProfePersonal! 🚀\n";
+        content += "Seguinos en nuestras redes para más tips y recursos educativos:\n";
+        content += "📸 Instagram: @ProfePersonalUy\n";
+        content += "🎥 TikTok: @ProfePersonalUy\n";
+        content += "✖️ X: @ProfePersonalUy\n";
+        content += "==================================================\n";
+
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const fileName = `TPP_${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}.txt`;
+        saveAs(blob, fileName);
+      } catch (error) {
+        boardContent.textContent = "¡Uy, loco! Hubo un error al generar el archivo.";
+      }
+    }
+
+    // Descargar MP4
+    async function generateMP4() {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1280;
+        canvas.height = 720;
+        const ctx = canvas.getContext('2d');
+        const stream = canvas.captureStream(30);
+        const audioContext = new AudioContext();
+        const destination = audioContext.createMediaStreamDestination();
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        recordedChunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) recordedChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `Clase_ElProfeTino_${new Date().toISOString().split('T')[0]}.webm`;
+          a.click();
+        };
+
+        // Simular escritura en canvas
+        let index = 0;
+        const typingSpeed = 50;
+        function drawFrame() {
+          ctx.fillStyle = '#1a0033';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.font = '24px Poppins';
+          ctx.fillStyle = '#ccff00';
+          ctx.fillText(classText.slice(0, index), 20, 40, canvas.width - 40);
+          if (index < classText.length) {
+            index++;
+            setTimeout(drawFrame, typingSpeed);
+          } else {
+            mediaRecorder.stop();
+          }
+        }
+
+        mediaRecorder.start();
+        drawFrame();
+      } catch (error) {
+        boardContent.textContent = "¡Uy, loco! Hubo un error al generar el MP4.";
+      }
+    }
+
+    // Configurar eventos
+    function setupEventListeners() {
+      startButton.addEventListener("click", startClass);
+      stopButton.addEventListener("click", stopClass);
+      txtButton.addEventListener("click", generateTXT);
+      mp4Button.addEventListener("click", generateMP4);
+      fileInput.addEventListener("change", () => {
+        if (fileInput.files.length > 0) {
+          processFile(fileInput.files[0]);
+          fileInput.value = "";
+        }
+      });
+      cameraButton.addEventListener("click", startCamera);
+      captureButton.addEventListener("click", capturePhoto);
+      cancelButton.addEventListener("click", cancelPhoto);
+    }
+
+    // Inicializar app
+    async function initApp() {
+      setupEventListeners();
+      if (classContent || classFileContent) {
+        await generateClass();
+      } else {
+        boardContent.textContent = lang.welcome;
+      }
+    }
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(initApp, 1);
+    } else {
+      document.addEventListener('DOMContentLoaded', initApp);
+    }
+  </script>
+</body>
+</html>
