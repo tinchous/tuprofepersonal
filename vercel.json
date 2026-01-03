@@ -1,14 +1,3 @@
 {
-  "version": 2,
-<<<<<<< HEAD
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/public/index.html" }
-  ]
-=======
-  "public": true,
-  "outputDirectory": "public",
-  "cleanUrls": true,
-  "trailingSlash": false
->>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
+  "version": 2
 }
