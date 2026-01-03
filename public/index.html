@@ -461,7 +461,43 @@ if(video){
   }, 1200);
 }
 </script>
+<script>
+/* === EPT CLICK DELEGATION (cuponeras → reservas.js) === */
+(function(){
+  let pendingBtn = null;
+
+  function tryOpen(){
+    if(pendingBtn && window.EPT_OPEN_RESERVA){
+      const btn = pendingBtn;
+      pendingBtn = null;
+      window.EPT_OPEN_RESERVA(btn);
+    }
+  }
+
+  document.addEventListener("click", function(e){
+    const el = e.target.closest('[data-ept-reserva="1"]');
+    if(!el) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    if(window.EPT_OPEN_RESERVA){
+      window.EPT_OPEN_RESERVA(el);
+    } else {
+      pendingBtn = el;
+      console.log("⏳ Reservas cargando… abro apenas esté listo.");
+      setTimeout(tryOpen, 300);
+    }
+  }, true);
+
+  window.addEventListener("EPT_RESERVAS_READY", tryOpen);
+  window.addEventListener("load", tryOpen);
+})();
+</script>
+
+<script src="/reservas.js" defer></script>
 </body>
 </html>
+
 
 
