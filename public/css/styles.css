@@ -530,3 +530,33 @@ footer {
 }
 
 
+
+
+/* === PEO-MAP-START === */
+#peo-ubicacion { margin-top: 22px; }
+#peo-ubicacion .peo-box {
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 18px;
+  background: rgba(10,10,20,0.55);
+  backdrop-filter: blur(6px);
+}
+#peo-ubicacion h2 {
+  margin: 0 0 10px 0;
+}
+#peo-ubicacion .peo-sub {
+  opacity: 0.88;
+  margin: 0 0 12px 0;
+}
+#peo-map {
+  height: 320px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.25);
+}
+.peo-map-fallback{
+  padding: 18px;
+  opacity: 0.9;
+}
+/* === PEO-MAP-END === */

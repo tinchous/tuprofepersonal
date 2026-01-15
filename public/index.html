@@ -166,6 +166,7 @@
 /* ====== fin patch ====== */
 </style>
   <link rel="stylesheet" href="/reservas.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
   <div class="wrap">
@@ -228,7 +229,14 @@
     </main>
 
     <section class="card section">
-      <h2>Herramientas PEO (incluidas para mis alumnos)</h2>
+      <section id="peo-ubicacion">
+  <div class="peo-box">
+    <h2>📍 Ubicación</h2>
+    <p class="peo-sub">José Enrique Rodó 2270 esquina Juan Paullier (Montevideo). Tocá el mapa para activar zoom.</p>
+    <div id="peo-map"></div>
+  </div>
+</section>
+<h2>Herramientas PEO (incluidas para mis alumnos)</h2>
       <div class="grid3">
         <div class="mini"><h3>🧩 TizaIA</h3><p>Responde dudas y explica temas, fórmulas y procedimientos con lenguaje claro y ejemplos reales.</p></div>
         <div class="mini"><h3>✏️ GeneraTusEjercicios</h3><p>Genera práctica con ejercicios similares, adaptados al nivel del alumno. Más práctica = más seguridad.</p></div>
@@ -436,6 +444,8 @@ if(video){
 </script>
 
 <script src="/reservas.js" defer></script><script src="/js/peo-tools-links.js" defer></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+<script src="/js/peo-map.js" defer></script>
 </body>
 </html>
 
