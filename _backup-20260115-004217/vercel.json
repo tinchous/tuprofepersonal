@@ -1,8 +1,0 @@
-﻿{
-  "version": 2,
-  "rewrites": [
-    { "source": "/tizaia", "destination": "/tizaia/index.html" },
-    { "source": "/tep",   "destination": "/tep/index.html" },
-    { "source": "/gte",   "destination": "/gte/index.html" }
-  ]
-}
