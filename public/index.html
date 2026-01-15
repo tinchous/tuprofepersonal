@@ -436,11 +436,12 @@ if(video){
 </script>
 
 <script src="/reservas.js" defer></script>
-<section id="peo-tools">
+<section id="peo-tools" style="position:relative; z-index:999999;">
   <div class="peo-tools-box">
     <h2>Herramientas PEO (incluidas para mis alumnos)</h2>
 
     <div class="peo-tools-grid">
+
       <div class="peo-tool-card" data-href="/tizaia" role="link" tabindex="0" aria-label="Abrir TizaIA">
         <div class="peo-tool-title">🧩 TizaIA</div>
         <div class="peo-tool-desc">Responde dudas y explica temas, fórmulas y procedimientos con lenguaje claro y ejemplos reales.</div>
@@ -458,6 +459,7 @@ if(video){
         <div class="peo-tool-desc">Simula un examen real: lo resolvés online, con tiempo y corrección. Llegás con cancha al examen.</div>
         <div class="peo-tool-cta">Abrir TEP →</div>
       </div>
+
     </div>
 
     <p class="peo-tools-note">
@@ -466,55 +468,7 @@ if(video){
     </p>
   </div>
 </section>
-<!-- PEO-TOOLS-NAV-START -->
-<script>
-(function () {
-  function inRect(x, y, r) {
-    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
-  }
-
-  function go(href) {
-    if (!href) return;
-    window.location.href = href;
-  }
-
-  // Captura clicks aunque el target sea un overlay
-  document.addEventListener('click', function (ev) {
-    try {
-      const section = document.getElementById('peo-tools');
-      if (!section) return;
-
-      const sx = ev.clientX, sy = ev.clientY;
-      const srect = section.getBoundingClientRect();
-
-      // Si el click NO fue dentro del bloque, salir
-      if (!inRect(sx, sy, srect)) return;
-
-      const cards = Array.from(section.querySelectorAll('.peo-tool-card[data-href]'));
-      for (const card of cards) {
-        const r = card.getBoundingClientRect();
-        if (inRect(sx, sy, r)) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          go(card.getAttribute('data-href'));
-          return;
-        }
-      }
-    } catch (e) {}
-  }, true); // <- CAPTURE true
-
-  // Enter/Espacio para accesibilidad
-  document.addEventListener('keydown', function (ev) {
-    const active = document.activeElement;
-    if (!active || !active.classList || !active.classList.contains('peo-tool-card')) return;
-    if (ev.key === 'Enter' || ev.key === ' ') {
-      ev.preventDefault();
-      go(active.getAttribute('data-href'));
-    }
-  });
-})();
-</script>
-<!-- PEO-TOOLS-NAV-END -->
+<script src="/js/peo-tools-nav.js" defer></script>
 </body>
 </html>
 
