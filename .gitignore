@@ -6,3 +6,7 @@ Add-Content .\.gitignore "`nnode_modules/`n.DS_Store`n.env`n"
 .env*.local
 =======
 >>>>>>> f0dbeec6dd44534da364c064d11b0e34cfa817a5
+
+# Añadido automáticamente - Archivos sensibles
+.env.local
+.env
