@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TizaIA - Tu Asistente Educativo Avanzado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <style>
+        :root {
+            --neon-cyan: #00ffff !important;
+            --neon-magenta: #ff00ff !important;
+            --neon-lime: #ccff00 !important;
+            --neon-bg: #1a0033 !important;
+            --neon-text: #ffffff !important;
+            --neon-border: #00ccff !important;
+            --neon-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff, 0 0 30px #ccff00 !important;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a0033, #330066);
+            color: var(--neon-text);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 100vw;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .chat-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            box-shadow: var(--neon-shadow);
+        }
+
+        .chat-header {
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta), var(--neon-lime), var(--neon-cyan));
+            background-size: 400% 400%;
+            animation: neonFlow 8s ease infinite;
+            color: var(--neon-text);
+            padding: 15px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            border-bottom: 2px solid var(--neon-border);
+            text-shadow: 0 0 5px var(--neon-cyan);
+        }
+
+        @keyframes neonFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .tizaia-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--neon-magenta);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-text);
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: var(--neon-shadow);
+            margin-right: 10px;
+        }
+
+        .chat-subheader { display: none; }
+
+        .chat-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: transparent;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            max-width: 85%;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            font-size: 16px;
+            line-height: 1.5;
+            box-shadow: var(--neon-shadow);
+        }
+
+        .user-message {
+            background: var(--neon-magenta);
+            color: var(--neon-text);
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+
+        .bot-message {
+            background: rgba(0, 204, 255, 0.2);
+            color: var(--neon-text);
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+        }
+
+        .graph-options {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .graph-button, .draw-button {
+            background: var(--neon-lime);
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-shadow: 0 0 3px #000;
+            box-shadow: var(--neon-shadow);
+        }
+
+        .graph-button:hover, .draw-button:hover { background: #99cc00; }
+
+        .graph-container {
+            margin-top: 15px;
+            width: 100%;
+            max-width: 1200px;
+            height: 400px;
+            border: 2px solid var(--neon-border);
+            border-radius: 8px;
+            display: none;
+            position: relative;
+            background: #000;
+        }
+
+        .graph-controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-button {
+            background: var(--neon-magenta);
+            color: var(--neon-text);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: var(--neon-shadow);
+        }
+
+        .control-button:hover { background: #cc00cc; }
+
+        .chat-footer {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-top: 2px solid var(--neon-border);
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        textarea {
+            padding: 12px;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 6px;
+            outline: none;
+            resize: none;
+            min-height: 80px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--neon-text);
+            box-shadow: var(--neon-shadow);
+        }
+
+        textarea:focus { border-color: var(--neon-lime); }
+
+        #sendButton {
+            background: var(--neon-cyan);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--neon-shadow);
+        }
+
+        #sendButton:hover { background: #00cccc; }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .file-input, button:not(#sendButton) {
+            background: rgba(0, 204, 255, 0.2);
+            color: var(--neon-text);
+            border: 2px solid var(--neon-border);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+            min-width: 100px;
+            box-shadow: var(--neon-shadow);
+        }
+
+        .file-input:hover, button:not(#sendButton):hover {
+            border-color: var(--neon-lime);
+            color: var(--neon-lime);
+        }
+
+        .query-counter {
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: var(--neon-cyan);
+            background: rgba(0, 0, 0, 0.7);
+            border-top: 2px solid var(--neon-border);
+            text-shadow: 0 0 5px var(--neon-cyan);
+        }
+
+        .preview-image {
+            max-width: 100%;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 2px solid var(--neon-border);
+            box-shadow: var(--neon-shadow);
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            margin: 15px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--neon-border);
+            background: #000;
+            position: relative;
+            box-shadow: var(--neon-shadow);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camera-controls {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 5px;
+        }
+
+        .camera-button {
+            background: var(--neon-magenta);
+            color: var(--neon-text);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            box-shadow: var(--neon-shadow);
+        }
+
+        .camera-button:hover {
+            background: #cc00cc;
+            transform: scale(1.1);
+        }
+
+        .drawing-tool {
+            display: none;
+            margin: 20px 0;
+            border: 2px solid var(--neon-border);
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+            box-shadow: var(--neon-shadow);
+        }
+
+        .drawing-canvas {
+            background: #fff;
+            width: 100%;
+            height: 300px;
+            cursor: crosshair;
+            display: block;
+            touch-action: none;
+        }
+
+        .drawing-controls {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            flex-wrap: wrap;
+        }
+
+        .drawing-button {
+            background: var(--neon-lime);
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+            min-width: 80px;
+            box-shadow: var(--neon-shadow);
+        }
+
+        .progress-container {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            margin: 15px 0;
+            display: none;
+            border: 1px solid var(--neon-border);
+        }
+
+        .progress-bar {
+            height: 10px;
+            border-radius: 5px;
+            background: var(--neon-cyan);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: var(--neon-shadow);
+        }
+
+        .status-message {
+            text-align: center;
+            color: var(--neon-lime);
+            font-size: 14px;
+            margin: 5px 0;
+            display: none;
+            text-shadow: 0 0 5px var(--neon-lime);
+        }
+
+        #cancelUpload {
+            background: var(--neon-magenta);
+            color: var(--neon-text);
+            display: none;
+        }
+
+        .bot-message h1 {
+            color: var(--neon-cyan);
+            font-size: 22px;
+            margin: 15px 0 8px;
+            font-weight: 700;
+            text-shadow: 0 0 5px var(--neon-cyan);
+        }
+
+        .bot-message h2 {
+            color: var(--neon-lime);
+            font-size: 20px;
+            margin: 12px 0 6px;
+            font-weight: 500;
+            text-shadow: 0 0 5px var(--neon-lime);
+        }
+
+        .bot-message p { margin: 10px 0; }
+
+        .bot-message .formula {
+            font-family: 'Roboto Mono', monospace;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: inline-block;
+            border: 1px solid var(--neon-border);
+            color: var(--neon-lime);
+            box-shadow: var(--neon-shadow);
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: typing 1s infinite ease-in-out;
+            box-shadow: 0 0 5px var(--neon-cyan);
+        }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @media (max-width: 768px) {
+            .chat-section { max-width: 95%; padding: 0 10px; }
+            .chat-header { font-size: 20px; padding: 10px 15px; }
+            .tizaia-icon { width: 25px; height: 25px; font-size: 16px; }
+            .message { font-size: 14px; padding: 12px 15px; max-width: 90%; }
+            textarea { font-size: 14px; min-height: 60px; }
+            #sendButton { font-size: 14px; padding: 10px; }
+            .button-row { flex-direction: column; gap: 8px; }
+            .file-input, button:not(#sendButton) { font-size: 12px; padding: 8px; min-width: 100%; }
+            .drawing-canvas { height: 200px; }
+            .video-container { max-width: 100%; height: 300px; }
+            .camera-button { padding: 8px 15px; font-size: 12px; }
+            .graph-container { max-width: 100%; height: 300px; }
+            .graph-button, .draw-button { font-size: 12px; padding: 8px 12px; }
+            .drawing-button { font-size: 12px; padding: 8px 12px; }
+        }
+
+        @media (max-width: 480px) {
+            .chat-header { font-size: 18px; }
+            .message { font-size: 12px; padding: 10px 12px; }
+            textarea { font-size: 12px; min-height: 50px; }
+            #sendButton { font-size: 12px; padding: 8px; }
+            .file-input, button:not(#sendButton) { font-size: 10px; padding: 6px; }
+            .drawing-canvas { height: 150px; }
+            .video-container { height: 250px; }
+            .graph-container { height: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="chat-section">
+            <header class="chat-header" role="banner">
+                <div class="tizaia-icon">T</div>
+                <h1 id="chatHeader">TizaIA</h1>
+            </header>
+            <div class="chat-subheader" id="chatSubheader"></div>
+            <main class="chat-body" id="chatBody" role="log" aria-live="polite"></main>
+            <footer class="chat-footer">
+                <div class="input-container">
+                    <textarea id="messageInput" aria-describedby="input-help" rows="3" placeholder="Escribe tu pregunta..."></textarea>
+                    <button id="sendButton" type="button">Enviar</button>
+                    <div class="button-row">
+                        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" class="file-input">
+                        <button id="cameraButton" type="button">Foto</button>
+                        <button id="clearButton" type="button">Borrar</button>
+                        <button id="downloadButton" type="button">Descargar</button>
+                    </div>
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="status-message" id="statusMessage">Procesando...</div>
+                    <button id="cancelUpload" type="button">Cancelar</button>
+                    <div id="previewContainer"></div>
+                    <div id="videoContainer" class="video-container" style="display: none;">
+                        <video id="video" autoplay></video>
+                        <div class="camera-controls">
+                            <button id="captureButton" class="camera-button">Capturar</button>
+                            <button id="cancelButton" class="camera-button">Cancelar</button>
+                        </div>
+                    </div>
+                    <div id="drawingTool" class="drawing-tool">
+                        <canvas id="drawingCanvas" class="drawing-canvas"></canvas>
+                        <div class="drawing-controls">
+                            <button id="clearDrawing" class="drawing-button">Borrar</button>
+                            <input type="color" id="drawingColor" value="#00ffff" title="Color">
+                            <input type="range" id="drawingSize" min="1" max="20" value="5" title="Grosor">
+                            <button id="saveDrawing" class="drawing-button">Guardar</button>
+                            <button id="desmosDrawing" class="drawing-button">A Desmos</button>
+                            <button id="cancelDrawing" class="drawing-button">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <div class="query-counter" id="queryCounter" aria-live="polite">0/5</div>
+        </div>
+    </div>
+
+    <script>
+                // API Key movida al backend (/api/generate)
+        const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+        const translations = {
+            "es": {
+                header: "TizaIA - Tu Asistente Educativo",
+                welcome: "¡Hola, loco! Soy TizaIA, tu compa educativo del futuro. Especialista en mates, física, química e informática, pero te ayudo con todo lo que quieras. ¿Qué precisás? ¡Subí un PDF, un JPG, sacá una foto o escribime nomás!",
+                fileUploaded: "¡Subiste el archivo: ${filename}! Vamos a darle caña.",
+                photoTaken: "¡Foto capturada, está perfecta!",
+                photoCanceled: "Tranqui, cancelamos la foto, ¿qué seguimos?",
+                uploading: "Subiendo archivo...",
+                processing: "Procesando archivo, por favor espera...",
+                uploadComplete: "¡Archivo subido con éxito!",
+                uploadCanceled: "Subida cancelada",
+                uploadError: "Error al subir el archivo",
+                drawPrompt: "Haz clic para dibujar el bosquejo o verlo en Desmos:",
+                drawingSaved: "¡Bosquejo guardado! ¿Querés que lo analice?",
+                drawingToDesmos: "¡Bosquejo enviado a Desmos!",
+                graphPrompt: "Haz clic para ver el gráfico en Desmos:"
+            }
+        };
+
+        const chatBody = document.getElementById("chatBody");
+        const messageInput = document.getElementById("messageInput");
+        const fileInput = document.getElementById("fileInput");
+        const cameraButton = document.getElementById("cameraButton");
+        const sendButton = document.getElementById("sendButton");
+        const clearButton = document.getElementById("clearButton");
+        const downloadButton = document.getElementById("downloadButton");
+        const queryCounter = document.getElementById("queryCounter");
+        const previewContainer = document.getElementById("previewContainer");
+        const videoContainer = document.getElementById("videoContainer");
+        const video = document.getElementById("video");
+        const captureButton = document.getElementById("captureButton");
+        const cancelButton = document.getElementById("cancelButton");
+        const progressContainer = document.getElementById("progressContainer");
+        const progressBar = document.getElementById("progressBar");
+        const statusMessage = document.getElementById("statusMessage");
+        const cancelUploadButton = document.getElementById("cancelUpload");
+        const drawingTool = document.getElementById("drawingTool");
+        const drawingCanvas = document.getElementById("drawingCanvas");
+        const clearDrawingButton = document.getElementById("clearDrawing");
+        const saveDrawingButton = document.getElementById("saveDrawing");
+        const desmosDrawingButton = document.getElementById("desmosDrawing");
+        const cancelDrawingButton = document.getElementById("cancelDrawing");
+        const drawingColor = document.getElementById("drawingColor");
+        const drawingSize = document.getElementById("drawingSize");
+
+        let stream = null;
+        let capturedImage = null;
+        let queryCount = 0;
+        const maxQueries = 5;
+        const lang = translations["es"];
+        let uploadInProgress = false;
+        let uploadCanceled = false;
+        let isDrawing = false;
+        let lastX = 0, lastY = 0;
+        let currentDrawing = null;
+        const ctx = drawingCanvas.getContext('2d');
+        let isTyping = false;
+        let messageCount = 0;
+        const graphCalculators = {};
+        let chatHistory = []; // Historial de mensajes
+
+        function initDrawingCanvas() {
+            resizeCanvas();
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            ctx.strokeStyle = drawingColor.value;
+            ctx.lineWidth = drawingSize.value;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            drawingCanvas.removeEventListener('mousedown', startDrawing);
+            drawingCanvas.removeEventListener('mousemove', draw);
+            drawingCanvas.removeEventListener('mouseup', stopDrawing);
+            drawingCanvas.removeEventListener('mouseout', stopDrawing);
+            drawingCanvas.removeEventListener('touchstart', handleTouchStart);
+            drawingCanvas.removeEventListener('touchmove', handleTouchMove);
+            drawingCanvas.removeEventListener('touchend', stopDrawing);
+
+            drawingCanvas.addEventListener('mousedown', startDrawing);
+            drawingCanvas.addEventListener('mousemove', draw);
+            drawingCanvas.addEventListener('mouseup', stopDrawing);
+            drawingCanvas.addEventListener('mouseout', stopDrawing);
+            drawingCanvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+            drawingCanvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+            drawingCanvas.addEventListener('touchend', stopDrawing);
+
+            drawingColor.addEventListener('input', () => ctx.strokeStyle = drawingColor.value);
+            drawingSize.addEventListener('input', () => ctx.lineWidth = drawingSize.value);
+        }
+
+        function resizeCanvas() {
+            const rect = drawingCanvas.getBoundingClientRect();
+            drawingCanvas.width = rect.width;
+            drawingCanvas.height = 300;
+        }
+
+        function startDrawing(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const pos = getPosition(e);
+            lastX = pos.x;
+            lastY = pos.y;
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const pos = getPosition(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function getPosition(e) {
+            const rect = drawingCanvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches?.[0]?.clientX) - rect.left;
+            const y = (e.clientY || e.touches?.[0]?.clientY) - rect.top;
+            return { x, y };
+        }
+
+        function stopDrawing() {
+            if (isDrawing) {
+                ctx.closePath();
+                isDrawing = false;
+            }
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', { clientX: touch.clientX, clientY: touch.clientY });
+            drawingCanvas.dispatchEvent(mouseEvent);
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', { clientX: touch.clientX, clientY: touch.clientY });
+            drawingCanvas.dispatchEvent(mouseEvent);
+        }
+
+        function showDrawingTool(messageId) {
+            drawingTool.style.display = 'block';
+            resizeCanvas();
+            initDrawingCanvas();
+            scrollToBottom();
+            return messageId;
+        }
+
+        function hideDrawingTool() {
+            drawingTool.style.display = 'none';
+        }
+
+        function addDrawingOptions(messageId) {
+            const container = document.createElement('div');
+            container.className = 'graph-options';
+            const drawButton = document.createElement('button');
+            drawButton.className = 'draw-button';
+            drawButton.textContent = 'Dibujar bosquejo';
+            drawButton.onclick = () => showDrawingTool(messageId);
+
+            const desmosButton = document.createElement('button');
+            desmosButton.className = 'graph-button';
+            desmosButton.textContent = 'Ver en Desmos';
+            const desmosContainer = document.createElement('div');
+            desmosContainer.id = `${messageId}-desmos`;
+            desmosContainer.className = 'graph-container';
+            desmosButton.onclick = () => toggleGraph(desmosContainer, initDesmos, ["y=x"], messageId);
+
+            container.appendChild(drawButton);
+            container.appendChild(desmosButton);
+            container.appendChild(desmosContainer);
+            chatBody.appendChild(container);
+            scrollToBottom();
+        }
+
+        function addMessage(text, type) {
+            if (type === 'bot' && !isTyping) {
+                showTypingIndicator();
+                setTimeout(() => {
+                    removeTypingIndicator();
+                    addMessageContent(text, type);
+                }, 1000);
+                return;
+            }
+            addMessageContent(text, type);
+        }
+
+        function showTypingIndicator() {
+            isTyping = true;
+            const typingDiv = document.createElement("div");
+            typingDiv.classList.add("message", "bot-message");
+            typingDiv.id = "typingIndicator";
+            const typingContent = document.createElement("div");
+            typingContent.className = "typing-indicator";
+            typingContent.innerHTML = '<span></span><span></span><span></span>';
+            typingDiv.appendChild(typingContent);
+            chatBody.appendChild(typingDiv);
+            scrollToBottom();
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById("typingIndicator");
+            if (typingIndicator) typingIndicator.remove();
+            isTyping = false;
+        }
+
+        function addMessageContent(text, type) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message", type === "user" ? "user-message" : "bot-message");
+            messageDiv.id = `message-${messageCount++}`;
+            let processedText = text;
+
+            // Guardar en el historial
+            chatHistory.push({ role: type === "user" ? "Usuario" : "TizaIA", content: text });
+
+            if (type === "bot") {
+                const graphMarker = "\n\n**Graph Instructions:**";
+                const graphIndex = text.indexOf(graphMarker);
+                let graphInstructions = null;
+                if (graphIndex !== -1) {
+                    processedText = text.substring(0, graphIndex);
+                    const jsonStr = text.substring(graphIndex + graphMarker.length).trim();
+                    try {
+                        graphInstructions = JSON.parse(jsonStr);
+                    } catch (e) {
+                        console.error("Error parsing graph instructions:", e);
+                    }
+                }
+
+                processedText = processedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/_([^_]+)_/g, '<em>$1</em>')
+                    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+                    .replace(/\$\$(.*?)\$\$/g, '<span class="formula">$1</span>')
+                    .replace(/Ejercicio resuelto \((.*?)\):/g, '<div class="exercise"><div class="exercise-title">Ejercicio resuelto ($1)</div>')
+                    .replace(/Paso (\d+):/g, '<div class="exercise-step"><strong>Paso $1:</strong>');
+
+                const drawingKeywords = ["bosquejar", "bosqueja"];
+                const graphingKeywords = ["graficar", "gráfica"];
+                const requiresDrawing = drawingKeywords.some(keyword => text.toLowerCase().includes(keyword));
+                const requiresGraphing = graphingKeywords.some(keyword => text.toLowerCase().includes(keyword));
+                const noGraphRequired = text.includes("No se requiere gráfica para este ejercicio.");
+
+                messageDiv.innerHTML = processedText;
+
+                if (requiresDrawing && !graphInstructions) {
+                    messageDiv.innerHTML += `<div style="margin-top:10px;">${lang.drawPrompt}</div>`;
+                    chatBody.appendChild(messageDiv);
+                    addDrawingOptions(messageDiv.id);
+                } else if (graphInstructions && graphInstructions.type === "graph" && graphInstructions.tools && graphInstructions.tools.desmos) {
+                    const optionsDiv = document.createElement("div");
+                    optionsDiv.classList.add("graph-options");
+                    optionsDiv.innerHTML = `<p>${lang.graphPrompt}</p>`;
+                    const messageId = messageDiv.id;
+
+                    const desmosButton = document.createElement("button");
+                    desmosButton.className = "graph-button";
+                    desmosButton.textContent = "Ver con Desmos";
+                    const desmosContainer = document.createElement("div");
+                    desmosContainer.id = `${messageId}-desmos`;
+                    desmosContainer.className = "graph-container";
+                    desmosButton.onclick = () => toggleGraph(desmosContainer, initDesmos, graphInstructions.tools.desmos, messageId);
+                    optionsDiv.appendChild(desmosButton);
+                    messageDiv.appendChild(desmosContainer);
+
+                    messageDiv.appendChild(optionsDiv);
+                    chatBody.appendChild(messageDiv);
+                } else if (requiresGraphing && !graphInstructions && !noGraphRequired) {
+                    const equationMatch = text.match(/y\s*=\s*[^\n]+/i) || text.match(/f\(x\)\s*=\s*[^\n]+/i);
+                    const fallbackExpressions = equationMatch ? [equationMatch[0]] : ["y=x"];
+                    messageDiv.innerHTML += `<div style="margin-top:10px;">${lang.graphPrompt}</div>`;
+                    const optionsDiv = document.createElement("div");
+                    optionsDiv.classList.add("graph-options");
+                    const messageId = messageDiv.id;
+
+                    const desmosButton = document.createElement("button");
+                    desmosButton.className = "graph-button";
+                    desmosButton.textContent = "Ver con Desmos";
+                    const desmosContainer = document.createElement("div");
+                    desmosContainer.id = `${messageId}-desmos`;
+                    desmosContainer.className = "graph-container";
+                    desmosButton.onclick = () => toggleGraph(desmosContainer, initDesmos, fallbackExpressions, messageId);
+                    optionsDiv.appendChild(desmosButton);
+                    messageDiv.appendChild(desmosContainer);
+
+                    messageDiv.appendChild(optionsDiv);
+                    chatBody.appendChild(messageDiv);
+                } else {
+                    chatBody.appendChild(messageDiv);
+                }
+            } else {
+                messageDiv.textContent = processedText;
+                chatBody.appendChild(messageDiv);
+            }
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function cleanExpressions(commands) {
+            const cleanedExpressions = [];
+            commands.forEach(expr => {
+                const equationMatch = expr.match(/^[y|f\(x\)]\s*=\s*[^\s,]+/i);
+                if (equationMatch) {
+                    cleanedExpressions.push(equationMatch[0]);
+                }
+            });
+            return cleanedExpressions.length > 0 ? cleanedExpressions : ["y=x"];
+        }
+
+        function toggleGraph(container, initFunction, commands, messageId) {
+            if (container.style.display === "block") {
+                container.style.display = "none";
+                const controls = container.nextElementSibling;
+                if (controls && controls.className === "graph-controls") controls.style.display = "none";
+            } else {
+                container.style.display = "block";
+                if (!container.dataset.initialized) {
+                    const cleanedCommands = cleanExpressions(commands);
+                    initFunction(container.id, cleanedCommands);
+                    container.dataset.initialized = "true";
+                    addGraphControls(container, "desmos", cleanedCommands, messageId);
+                }
+            }
+            scrollToBottom();
+        }
+
+        function initDesmos(containerId, expressions) {
+            if (graphCalculators[containerId]) {
+                graphCalculators[containerId].destroy();
+                delete graphCalculators[containerId];
+            }
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            const calculator = Desmos.GraphingCalculator(container, {
+                width: "100%",
+                height: 400,
+                keypad: false,
+                expressionsTopbar: false
+            });
+            expressions.forEach(expr => calculator.setExpression({ id: `graph-${Date.now()}`, latex: expr }));
+            graphCalculators[containerId] = calculator;
+        }
+
+        function addGraphControls(container, toolType, commands, messageId) {
+            let controlsDiv = container.nextElementSibling;
+            if (!controlsDiv || controlsDiv.className !== "graph-controls") {
+                controlsDiv = document.createElement("div");
+                controlsDiv.className = "graph-controls";
+                container.insertAdjacentElement("afterend", controlsDiv);
+            }
+
+            controlsDiv.innerHTML = "";
+            const downloadButton = document.createElement("button");
+            downloadButton.className = "control-button";
+            downloadButton.textContent = "Descargar Gráfico";
+            downloadButton.onclick = () => downloadGraph(container, toolType, messageId);
+
+            const clearButton = document.createElement("button");
+            clearButton.className = "control-button";
+            clearButton.textContent = "Borrar Gráfico";
+            clearButton.onclick = () => clearGraph(container, toolType, messageId);
+
+            controlsDiv.appendChild(downloadButton);
+            controlsDiv.appendChild(clearButton);
+            controlsDiv.style.display = "flex";
+        }
+
+        function downloadGraph(container, toolType, messageId) {
+            if (toolType === "desmos") {
+                const calculator = graphCalculators[container.id];
+                if (calculator) {
+                    calculator.asyncScreenshot({
+                        format: "png",
+                        width: container.offsetWidth,
+                        height: 400
+                    }, (data) => {
+                        const link = document.createElement("a");
+                        link.href = data;
+                        link.download = `grafico_desmos_${messageId}.png`;
+                        link.click();
+                    });
+                }
+            }
+        }
+
+        function clearGraph(container, toolType, messageId) {
+            if (toolType === "desmos") {
+                if (graphCalculators[container.id]) {
+                    graphCalculators[container.id].destroy();
+                    delete graphCalculators[container.id];
+                }
+            }
+            container.innerHTML = "";
+            container.style.display = "none";
+            container.dataset.initialized = "";
+            const controls = container.nextElementSibling;
+            if (controls && controls.className === "graph-controls") controls.style.display = "none";
+            scrollToBottom();
+        }
+
+        function showProgress(show, message = "") {
+            progressContainer.style.display = show ? "block" : "none";
+            statusMessage.style.display = show ? "block" : "none";
+            cancelUploadButton.style.display = show ? "block" : "none";
+            if (message) statusMessage.textContent = message;
+            if (!show) progressBar.style.width = "0%";
+        }
+
+        function updateProgress(percentage) {
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function generateTXT() {
+            try {
+                const today = new Date();
+                const dateString = `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()} ${today.getHours()}:${today.getMinutes().toString().padStart(2, '0')}`;
+                const line = "=".repeat(80);
+                let content = `${line}\n`;
+                content += `${" ".repeat(20)}TizaIA - Conversación Educativa${" ".repeat(20)}\n`;
+                content += `${" ".repeat(20)}Generado el: ${dateString}${" ".repeat(20)}\n`;
+                content += `${line}\n\n`;
+
+                const messages = chatBody.querySelectorAll('.message');
+                messages.forEach((message) => {
+                    const isUser = message.classList.contains('user-message');
+                    const text = message.textContent;
+                    content += `${isUser ? "Usuario" : "TizaIA"}: ${text}\n`;
+                    content += `${"-".repeat(80)}\n`;
+                });
+
+                content += `\n${line}\n`;
+                content += `${" ".repeat(15)}¡Gracias por usar TizaIA, tu asistente educativo del futuro!${" ".repeat(15)}\n`;
+                content += `${" ".repeat(25)}Seguinos en nuestras redes sociales:${" ".repeat(25)}\n`;
+                content += `${" ".repeat(25)}Twitter: @TizaIA_Oficial${" ".repeat(25)}\n`;
+                content += `${" ".repeat(25)}Instagram: @TizaIA_Edu${" ".repeat(25)}\n`;
+                content += `${line}\n`;
+
+                const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+                const fileName = `TizaIA_${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}.txt`;
+                saveAs(blob, fileName);
+            } catch (error) {
+                addMessage("¡Uy, loco! Hubo un error al generar el archivo.", "bot");
+            }
+        }
+
+        async function processFile(file) {
+            showProgress(true, lang.processing);
+            uploadCanceled = false;
+            uploadInProgress = true;
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                if (uploadCanceled) {
+                    clearInterval(progressInterval);
+                    return;
+                }
+                progress = Math.min(progress + 5, 90);
+                updateProgress(progress);
+            }, 200);
+
+            try {
+                let result = null;
+                if (file.type === "application/pdf") {
+                    const text = await extractTextFromPDF(file);
+                    addMessage(lang.fileUploaded.replace("${filename}", file.name), "user");
+                    result = { text: `Analizá y resolvé paso a paso este ejercicio extraído de un PDF:\n\n${text}`, image: null };
+                } else if (file.type.startsWith("image/")) {
+                    const imageUrl = URL.createObjectURL(file);
+                    const img = document.createElement("img");
+                    img.src = imageUrl;
+                    img.classList.add("preview-image");
+                    previewContainer.appendChild(img);
+                    addMessage(lang.fileUploaded.replace("${filename}", file.name), "user");
+                    result = { text: "Analizá y resolvé paso a paso este ejercicio desde la imagen subida.", image: imageUrl };
+                } else {
+                    throw new Error("Formato de archivo no soportado");
+                }
+                updateProgress(100);
+                setTimeout(() => {
+                    showProgress(false);
+                    statusMessage.textContent = lang.uploadComplete;
+                    setTimeout(() => statusMessage.textContent = "", 2000);
+                }, 500);
+                return result;
+            } catch (error) {
+                showProgress(false);
+                addMessage(`¡Uy, loco! Error al procesar el archivo: ${error.message}`, "bot");
+                return null;
+            } finally {
+                clearInterval(progressInterval);
+                uploadInProgress = false;
+            }
+        }
+
+        async function extractTextFromPDF(file) {
+            try {
+                const pdfjsLib = window['pdfjs-dist/build/pdf'];
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js';
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                let text = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const content = await page.getTextContent();
+                    text += content.items.map(item => item.str).join(' ') + '\n';
+                }
+                return text;
+            } catch (error) {
+                throw new Error("No se pudo leer el PDF.");
+            }
+        }
+
+        async function startCamera() {
+            try {
+                if (stream) stopCamera();
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: { ideal: 800 }, height: { ideal: 800 }, facingMode: 'environment' } 
+                });
+                video.srcObject = stream;
+                videoContainer.style.display = "block";
+                scrollToBottom();
+            } catch (error) {
+                addMessage(`¡Uy, loco! Error con la cámara: ${error.message}`, "bot");
+            }
+        }
+
+        function capturePhoto() {
+            try {
+                const canvas = document.createElement("canvas");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext("2d").drawImage(video, 0, 0);
+                capturedImage = canvas.toDataURL("image/jpeg");
+                const img = document.createElement("img");
+                img.src = capturedImage;
+                img.classList.add("preview-image");
+                previewContainer.appendChild(img);
+                stopCamera();
+                addMessage(lang.photoTaken, "user");
+            } catch (error) {
+                addMessage("¡No pude capturar la foto!", "bot");
+            }
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                videoContainer.style.display = "none";
+                video.srcObject = null;
+                stream = null;
+            }
+        }
+
+        function cancelPhoto() {
+            stopCamera();
+            addMessage(lang.photoCanceled, "user");
+            capturedImage = null;
+        }
+
+        function cancelUpload() {
+            if (uploadInProgress) {
+                uploadCanceled = true;
+                showProgress(false);
+                statusMessage.textContent = lang.uploadCanceled;
+                setTimeout(() => statusMessage.textContent = "", 2000);
+                fileInput.value = "";
+            }
+        }
+
+        function saveDrawing() {
+            try {
+                const imageData = drawingCanvas.toDataURL("image/png");
+                const img = document.createElement("img");
+                img.src = imageData;
+                img.classList.add("preview-image");
+                previewContainer.appendChild(img);
+                currentDrawing = imageData;
+                hideDrawingTool();
+                addMessage(lang.drawingSaved, "user");
+            } catch (error) {
+                addMessage("¡Uy! No pude guardar el dibujo.", "bot");
+            }
+        }
+
+        function drawingToDesmos() {
+            try {
+                const imageData = drawingCanvas.toDataURL("image/png");
+                hideDrawingTool();
+                const messageId = `message-${messageCount}`;
+                const desmosContainer = document.createElement("div");
+                desmosContainer.id = `${messageId}-desmos`;
+                desmosContainer.className = "graph-container";
+                chatBody.appendChild(desmosContainer);
+                toggleGraph(desmosContainer, initDesmos, ["y=x"], messageId);
+                addMessage(lang.drawingToDesmos, "user");
+            } catch (error) {
+                addMessage("¡Uy! No pude enviar el dibujo a Desmos.", "bot");
+            }
+        }
+
+        async function sendMessage() {
+            try {
+                let messageText = messageInput.value.trim();
+                let finalMessage = { text: messageText, image: null };
+                if (queryCount >= maxQueries) {
+                    addMessage("¡Pará, loco! Llegaste al límite de 5 consultas.", "bot");
+                    return;
+                }
+                if (!messageText && !fileInput.files.length && !capturedImage && !currentDrawing) return;
+
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    finalMessage = await processFile(file) || finalMessage;
+                    fileInput.value = "";
+                } else if (capturedImage) {
+                    finalMessage = { text: "Analizá y resolvé paso a paso este ejercicio desde la foto capturada.", image: capturedImage };
+                } else if (currentDrawing) {
+                    finalMessage = { text: "Analizá y resolvé paso a paso este ejercicio desde el bosquejo realizado.", image: currentDrawing };
+                    currentDrawing = null;
+                }
+
+                if (finalMessage.text || finalMessage.image) {
+                    if (!finalMessage.text.startsWith("Analizá")) addMessage(messageText, "user");
+                    messageInput.value = "";
+                    previewContainer.innerHTML = "";
+                    capturedImage = null;
+                    currentDrawing = null;
+                    const botResponse = await getTizaIAResponse(finalMessage.text, finalMessage.image);
+                    addMessage(botResponse, "bot");
+                    queryCount++;
+                    queryCounter.textContent = `${queryCount}/${maxQueries}`;
+                }
+            } catch (error) {
+                addMessage(`¡Qué macana! Error: ${error.message}`, "bot");
+            }
+        }
+
+        async function getTizaIAResponse(text, image) {
+                        const url = `/api/generate`;
+            // Construir el historial como contexto
+            let historyContext = "Historial de la conversación:\n";
+            chatHistory.forEach(msg => {
+                historyContext += `${msg.role}: ${msg.content}\n`;
+            });
+            const prompt = `Eres TizaIA, un asistente educativo para todas las materias, especializado en matemáticas, física, química e informática. Tienes memoria de las consultas anteriores dentro de las 5 permitidas. Responde de manera clara, didáctica y paso a paso, considerando el contexto del historial. Si la consulta requiere graficar (como "graficar" o "gráfica"), incluye al final "\n\n**Graph Instructions:**" seguido de un JSON con instrucciones para Desmos. Ejemplo: "\n\n**Graph Instructions:** {\"type\": \"graph\", \"tools\": {\"desmos\": [\"y=x^2\"]}}".\n\n${historyContext}\nConsulta actual: "${text}"`;
+            let requestBody = { contents: [{ parts: [{ text: prompt }] }] };
+
+            if (image) {
+                const base64Image = image.startsWith('data:image') ? image.split(',')[1] : await fetch(image).then(r => r.blob()).then(blob => new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
+                    reader.readAsDataURL(blob);
+                }));
+                requestBody.contents[0].parts.push({ inlineData: { mimeType: "image/jpeg", data: base64Image } });
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tool: 'tizaia', requestBody })
+                });
+                if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                return `¡Uy, loco! Hubo un problema: ${error.message}.`;
+            }
+        }
+
+        function setupEventListeners() {
+            cameraButton.addEventListener("click", startCamera);
+            captureButton.addEventListener("click", capturePhoto);
+            cancelButton.addEventListener("click", cancelPhoto);
+            sendButton.addEventListener("click", sendMessage);
+            messageInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            cancelUploadButton.addEventListener("click", cancelUpload);
+            clearButton.addEventListener("click", () => {
+                chatBody.innerHTML = "";
+                addMessage(lang.welcome, "bot");
+                queryCount = 0;
+                chatHistory = []; // Reiniciar historial
+                queryCounter.textContent = `0/${maxQueries}`;
+            });
+            downloadButton.addEventListener("click", generateTXT);
+            clearDrawingButton.addEventListener("click", () => {
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            });
+            saveDrawingButton.addEventListener("click", saveDrawing);
+            desmosDrawingButton.addEventListener("click", drawingToDesmos);
+            cancelDrawingButton.addEventListener("click", () => {
+                hideDrawingTool();
+                addMessage("Cancelé el bosquejo, ¿qué más necesitás?", "bot");
+            });
+        }
+
+        function initApp() {
+            setupEventListeners();
+            addMessage(lang.welcome, "bot");
+            initDrawingCanvas();
+        }
+
+        window.onbeforeunload = () => {
+            stopCamera();
+            if (stream) stream.getTracks().forEach(track => track.stop());
+            Object.values(graphCalculators).forEach(calc => calc.destroy());
+        };
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(initApp, 1);
+        } else {
+            document.addEventListener('DOMContentLoaded', initApp);
+        }
+    </script>
+</body>
+</html>

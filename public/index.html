@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es-UY">
 <head>
   <meta charset="utf-8" />
@@ -197,7 +197,7 @@
         <div class="kpis">
           <div class="kpi">📍 Zona <b>Cordón</b></div>
           <div class="kpi">🧠 Explicación clara + práctica</div>
-          <div class="kpi">🤖 Herramientas propias (TizaIA / Ejercicios / Examen)</div>
+          <div class="kpi">🤖 Herramientas propias (TizaIA / GTE / TEP)</div>
         </div>
 
         <div class="cta-row">
@@ -206,7 +206,7 @@
         </div>
 
         <div class="tiny">
-          *La plataforma PEO incluye 3 herramientas creadas por mí para que el alumno no se quede con dudas y practique con criterio.
+          *La plataforma PEO incluye 3 herramientas creadas por mí para que no te quedes con dudas y practiques con criterio.
         </div>
       </section>
 
@@ -239,7 +239,7 @@
     <section class="card section">
       <h2>Cuponeras 2026</h2>
       <div style="color:var(--muted);font-size:13px;margin-top:-6px;margin-bottom:12px;">
-        Elegí la cuponera según la situación del alumno. Todas las clases son <b>presenciales</b>, <b>individuales</b> y <b>personalizadas</b>.
+        Elegí la cuponera según tu situación. Todas las clases son <b>presenciales</b>, <b>individuales</b> y <b>personalizadas</b>.
       </div>
 
       <div class="plans">
@@ -257,21 +257,21 @@
           <div class="small">Cuando necesitás algo más para entender todo.</div>
           <div class="buy"><a class="btn buybtn accent" data-plan="NO ENTIENDO (12 clases) - UYU 5.400" href="#" target="_blank" rel="noopener" data-ept-reserva="1" data-cuponera="NO ENTIENDO" data-clases="12" href="javascript:void(0)">⭐ ¡La quiero!</a></div>
         </div>
-
-        <div class="plan horno"><div class="tag">🔥 EN EL HORNO</div>
-          <div class="name">15 clases</div>
-          <div class="price">UYU 6.375</div>
-          <div class="small">Si sentís que estás “en el horno”, esta es tu cuponera.</div>
-          <div class="buy"><a class="btn buybtn" data-plan="EN EL HORNO (15 clases) - UYU 6.375" href="#" target="_blank" rel="noopener" data-ept-reserva="1" data-cuponera="EN EL HORNO" data-clases="15" href="javascript:void(0)">🟩 Comprar por WhatsApp</a></div>
-        </div>
-
-        <div class="plan exam neon">
+		
+		 <div class="plan exam neon">
           <div class="tag">🎓 PREPARA TU EXAMEN</div>
           <div class="name">12 clases • Febrero 2026</div>
           <div class="price">UYU 4.800</div>
           <div class="small"><b>⏳ Cupos limitados</b><br/><b>Solo</b> para exámenes de Febrero 2026. Para llegar seguro y aprobar sí o sí.</div>
           <div class="buy"><a class="btn buybtn primary" data-plan="PREPARA TU EXAMEN (12 clases Feb/2026) - UYU 4.800" href="#" target="_blank" rel="noopener" data-ept-reserva="1" data-cuponera="PREPARA TU EXAMEN" data-clases="12" href="javascript:void(0)">🎯 Quiero preparar el examen</a></div>
         </div>
+
+        <div class="plan horno"><div class="tag">🔥 EN EL HORNO</div>
+          <div class="name">15 clases</div>
+          <div class="price">UYU 6.375</div>
+          <div class="small">Si sentís que estás “en el horno”, esta es tu cuponera.</div>
+          <div class="buy"><a class="btn buybtn" data-plan="EN EL HORNO (15 clases) - UYU 6.375" href="#" target="_blank" rel="noopener" data-ept-reserva="1" data-cuponera="EN EL HORNO" data-clases="15" href="javascript:void(0)">🟩 Comprar por WhatsApp</a></div>
+        </div>   
       </div>
     </section>
 
@@ -340,74 +340,14 @@
     </div>
   </div>
 
-  <script>
-const WHATSAPP_NUMBER = "59898175225";
-
-function waLink(message){
-  const txt = encodeURIComponent(message);
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${txt}`;
-}
-
-// Año footer
-const yearEl = document.getElementById("year");
-if(yearEl) yearEl.textContent = new Date().getFullYear();
-
-// WhatsApp general
-const msgGeneral = "Hola ElProfeTino, quiero consultar por clases presenciales de Matemática/Física (7º a 9º o Bachillerato).";
-const waGeneral = waLink(msgGeneral);
-const btnWhats = document.getElementById("btnWhats");
-const btnWhats2 = document.getElementById("btnWhats2");
-if(btnWhats) btnWhats.href = waGeneral;
-if(btnWhats2) btnWhats2.href = waGeneral;
-
-// Modal FAQ
-const backdrop = document.getElementById("modalBackdrop");
-const openBtns = [document.getElementById("btnFaq"), document.getElementById("fabFaq")];
-const closeBtns = [document.getElementById("modalClose"), document.getElementById("btnClose2")];
-
-function openModal(){
-  if(!backdrop) return;
-  backdrop.style.display = "flex";
-  backdrop.setAttribute("aria-hidden","false");
-}
-function closeModal(){
-  if(!backdrop) return;
-  backdrop.style.display = "none";
-  backdrop.setAttribute("aria-hidden","true");
-}
-
-openBtns.forEach(b => b && b.addEventListener("click", openModal));
-closeBtns.forEach(b => b && b.addEventListener("click", closeModal));
-if(backdrop){
-  backdrop.addEventListener("click", e => { if(e.target === backdrop) closeModal(); });
-}
-window.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
-
-// Video fallback
-const video = document.getElementById("introVideo");
-const fb = document.getElementById("videoFallback");
-function showVideoFallback(){
-  if(!fb || !video) return;
-  fb.style.display = "flex";
-  video.setAttribute("controls","controls");
-}
-if(video){
-  video.addEventListener("error", showVideoFallback);
-  setTimeout(() => {
-    if(video.readyState <= 1 || video.paused){
-      video.play().catch(showVideoFallback);
-    }
-  }, 1200);
-}
-</script>
   <script src="/reservas.js" defer></script>
   <script>
-const WHATSAPP_NUMBER = "59898175225";
+	const WHATSAPP_NUMBER = "59898175225";
 
-function waLink(message){
-  const txt = encodeURIComponent(message);
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${txt}`;
-}
+	function waLink(message){
+		const txt = encodeURIComponent(message);
+		return `https://wa.me/${WHATSAPP_NUMBER}?text=${txt}`;
+	}
 
 // Año footer
 const yearEl = document.getElementById("year");
