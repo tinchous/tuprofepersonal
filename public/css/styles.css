@@ -560,3 +560,53 @@ footer {
   opacity: 0.9;
 }
 /* === PEO-MAP-END === */
+
+
+/* === PEO-UBIC-FOOTER-START === */
+#peo-ubicacion-footer { margin-top: 18px; }
+#peo-ubicacion-footer .peo-footer-box{
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: rgba(10,10,20,0.45);
+  backdrop-filter: blur(6px);
+}
+#peo-ubicacion-footer .peo-footer-row{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+#peo-ubicacion-footer .peo-footer-title{
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+#peo-ubicacion-footer .peo-footer-text{
+  opacity: 0.88;
+  margin-top: 4px;
+}
+#peo-ubicacion-footer .peo-footer-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+#peo-ubicacion-footer .peo-footer-btn{
+  text-decoration:none;
+  color:inherit;
+  border:1px solid rgba(255,255,255,0.18);
+  padding:10px 12px;
+  border-radius:12px;
+}
+#peo-ubicacion-footer .peo-footer-btn:hover{
+  border-color: rgba(255,255,255,0.32);
+}
+#peo-ubicacion-footer .peo-footer-map{
+  margin-top: 12px;
+  height: 220px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.25);
+}
+/* === PEO-UBIC-FOOTER-END === */

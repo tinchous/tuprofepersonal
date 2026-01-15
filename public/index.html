@@ -210,23 +210,7 @@
           *La plataforma PEO incluye 3 herramientas creadas por mí para que no te quedes con dudas y practiques con criterio.
         </div>
       </section>
-<section id="peo-ubicacion">
-  <div class="peo-box">
-    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-      <h2 style="margin:0;">📍 Ubicación</h2>
-      <a href="https://www.google.com/maps/search/?api=1&query=Jos%C3%A9%20Enrique%20Rod%C3%B3%202270%20esquina%20Juan%20Paullier%2C%20Montevideo%2C%20Uruguay"
-         target="_blank" rel="noopener noreferrer"
-         style="text-decoration:none; border:1px solid rgba(255,255,255,0.18); padding:10px 12px; border-radius:12px; display:inline-block;">
-        Abrir en Google Maps →
-      </a>
-    </div>
-    <p class="peo-sub">José Enrique Rodó 2270 esquina Juan Paullier (Montevideo). Tocá el mapa para activar zoom.</p>
-    <div id="peo-map"></div>
-  </div>
-</section>
-
-
-      <aside class="card hero-right">
+<aside class="card hero-right">
         <div class="video-wrap">
           <div class="video-badge">ElProfeTino • intro</div>
           <video id="introVideo" autoplay muted loop playsinline preload="auto" poster="/assets/portada_EPT.png">
@@ -295,7 +279,45 @@
       © <span id="year"></span>
       <span style="color:#fff;font-weight:800;">ElProfe</span><span style="color:var(--brand);font-weight:800;">Tino</span>
       • <span style="opacity:.85;">PEO - Plataforma Educativa Online</span>
-    </footer>
+    <section id="peo-ubicacion-footer">
+  <div class="peo-footer-box">
+    <div class="peo-footer-row">
+      <div>
+        <div class="peo-footer-title">📍 Ubicación</div>
+        <div class="peo-footer-text">José Enrique Rodó 2270 esquina Juan Paullier (Montevideo).</div>
+      </div>
+      <div class="peo-footer-actions">
+        <a class="peo-footer-btn" href="https://www.google.com/maps/search/?api=1&query=Jos%C3%A9%20Enrique%20Rod%C3%B3%202270%20esquina%20Juan%20Paullier%2C%20Montevideo%2C%20Uruguay"
+           target="_blank" rel="noopener noreferrer">
+          Abrir en Google Maps →
+        </a>
+      </div>
+    </div>
+
+    <div id="peo-map-footer" class="peo-footer-map" aria-label="Mapa"></div>
+  </div>
+</section>
+
+<script>
+(function(){
+  // mapa opcional: si Leaflet no está, no hacemos nada (sin mensajes feos)
+  if(!window.L) return;
+  var el = document.getElementById('peo-map-footer');
+  if(!el) return;
+
+  var lat = -34.9049, lon = -56.1747; // Cordón aprox
+  var map = L.map('peo-map-footer', { scrollWheelZoom:false }).setView([lat, lon], 16);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19, attribution:'&copy; OpenStreetMap' }).addTo(map);
+
+  var icon = L.icon({ iconUrl:'/assets/logo_EPT.png', iconSize:[40,40], iconAnchor:[20,40], popupAnchor:[0,-36] });
+  var marker = L.marker([lat, lon], { icon: icon }).addTo(map);
+  marker.bindPopup('<b>ElProfeTino</b><br>José Enrique Rodó 2270 esquina Juan Paullier').openPopup();
+
+  map.on('click', function(){ map.scrollWheelZoom.enable(); });
+})();
+</script>
+</footer>
   </div>
 
   <div class="fab" id="fabFaq" role="button" aria-label="Preguntas frecuentes" tabindex="0">
