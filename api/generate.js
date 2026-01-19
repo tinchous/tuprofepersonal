@@ -1,50 +1,41 @@
 ﻿export default async function handler(req, res) {
   try {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method Not Allowed" });
-    }
+    if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
 
-    const apiKey =
-      process.env.GEMINI_API_KEY ||
-      process.env.API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+    if (!apiKey) return res.status(500).json({ error: "Server misconfigured: GEMINI_API_KEY missing" });
 
-    if (!apiKey) {
-      throw new Error("GEMINI_API_KEY no configurada en Vercel");
-    }
-
-    // El frontend envía { tool, requestBody }
     const { tool, requestBody } = req.body || {};
-    if (!requestBody || !requestBody.contents) {
-      return res.status(400).json({ error: "requestBody inválido" });
-    }
+    if (!requestBody || !requestBody.contents) return res.status(400).json({ error: "Bad Request: requestBody.contents missing" });
 
     const model = process.env.GEMINI_MODEL || "gemini-1.5-flash-latest";
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody)
-    });
-
-    if (!response.ok) {
-      const t = await response.text();
-      throw new Error(`Gemini API error: ${t}`);
+    async function callGemini() {
+      return fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
     }
 
-    const data = await response.json();
+    let r = await callGemini();
 
-    return res.status(200).json({
-      success: true,
-      tool,
-      data
-    });
+    // 1 retry si 429
+    if (r.status === 429) {
+      await new Promise(r => setTimeout(r, 1500));
+      r = await callGemini();
+    }
 
-  } catch (error) {
-    console.error("API Error:", error);
-    return res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    const text = await r.text();
+
+    if (!r.ok) {
+      // devolvemos el error real tal cual para diagnóstico
+      return res.status(r.status).setHeader("Content-Type", "application/json").send(text);
+    }
+
+    return res.status(200).setHeader("Content-Type", "application/json").send(text);
+  } catch (e) {
+    return res.status(500).json({ error: "Internal Error", details: String(e?.message || e) });
   }
 }
