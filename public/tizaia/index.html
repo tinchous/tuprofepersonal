@@ -1236,6 +1236,80 @@
             document.addEventListener('DOMContentLoaded', initApp);
         }
     </script>
+<!-- ONIT_ANTI_429_GUARD -->
+<script>
+(() => {
+  // Config: ajustable
+  const COOLDOWN_MS = 3000;      // minimo entre llamadas
+  const RETRY_WAIT_MS = 12000;   // espera antes del reintento por 429
+  const MAX_RETRIES = 1;         // reintentos maximos por request
+
+  let inFlight = false;
+  let lastCall = 0;
+
+  const originalFetch = window.fetch.bind(window);
+
+  async function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  window.fetch = async (input, init) => {
+    try {
+      const url = (typeof input === "string") ? input : (input && input.url) ? input.url : "";
+      const isGenerate = typeof url === "string" && url.includes("/api/generate");
+
+      if (!isGenerate) return originalFetch(input, init);
+
+      // Evitar múltiples requests en paralelo
+      if (inFlight) {
+        console.warn("[ANTI429] Bloqueado: request en curso");
+        return new Response(JSON.stringify({ error: "BUSY", message: "Espera a que termine la respuesta anterior." }), {
+          status: 429,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+
+      // Cooldown entre requests
+      const now = Date.now();
+      const delta = now - lastCall;
+      if (delta < COOLDOWN_MS) {
+        console.warn("[ANTI429] Cooldown activo:", COOLDOWN_MS - delta, "ms");
+        return new Response(JSON.stringify({ error: "COOLDOWN", message: "Estás yendo muy rápido. Esperá un momento." }), {
+          status: 429,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+
+      inFlight = true;
+      lastCall = now;
+
+      let attempt = 0;
+      while (true) {
+        const res = await originalFetch(input, init);
+
+        if (res.status !== 429) {
+          inFlight = false;
+          return res;
+        }
+
+        // 429: reintento controlado
+        attempt++;
+        if (attempt > MAX_RETRIES) {
+          inFlight = false;
+          return res;
+        }
+
+        console.warn("[ANTI429] 429 recibido. Reintentando en", RETRY_WAIT_MS, "ms...");
+        await sleep(RETRY_WAIT_MS);
+      }
+
+    } catch (e) {
+      inFlight = false;
+      throw e;
+    }
+  };
+})();
+</script>
+<!-- /ONIT_ANTI_429_GUARD -->
 </body>
 </html>
+
 
