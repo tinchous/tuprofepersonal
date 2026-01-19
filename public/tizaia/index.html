@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -510,23 +510,23 @@
 
     <script>
                 // API Key movida al backend (/api/generate)
-        const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+        const API_URL = '/api/generate';
         const translations = {
             "es": {
                 header: "TizaIA - Tu Asistente Educativo",
-                welcome: "¡Hola, loco! Soy TizaIA, tu compa educativo del futuro. Especialista en mates, física, química e informática, pero te ayudo con todo lo que quieras. ¿Qué precisás? ¡Subí un PDF, un JPG, sacá una foto o escribime nomás!",
-                fileUploaded: "¡Subiste el archivo: ${filename}! Vamos a darle caña.",
-                photoTaken: "¡Foto capturada, está perfecta!",
-                photoCanceled: "Tranqui, cancelamos la foto, ¿qué seguimos?",
+                welcome: "Â¡Hola, loco! Soy TizaIA, tu compa educativo del futuro. Especialista en mates, fÃ­sica, quÃ­mica e informÃ¡tica, pero te ayudo con todo lo que quieras. Â¿QuÃ© precisÃ¡s? Â¡SubÃ­ un PDF, un JPG, sacÃ¡ una foto o escribime nomÃ¡s!",
+                fileUploaded: "Â¡Subiste el archivo: ${filename}! Vamos a darle caÃ±a.",
+                photoTaken: "Â¡Foto capturada, estÃ¡ perfecta!",
+                photoCanceled: "Tranqui, cancelamos la foto, Â¿quÃ© seguimos?",
                 uploading: "Subiendo archivo...",
                 processing: "Procesando archivo, por favor espera...",
-                uploadComplete: "¡Archivo subido con éxito!",
+                uploadComplete: "Â¡Archivo subido con Ã©xito!",
                 uploadCanceled: "Subida cancelada",
                 uploadError: "Error al subir el archivo",
                 drawPrompt: "Haz clic para dibujar el bosquejo o verlo en Desmos:",
-                drawingSaved: "¡Bosquejo guardado! ¿Querés que lo analice?",
-                drawingToDesmos: "¡Bosquejo enviado a Desmos!",
-                graphPrompt: "Haz clic para ver el gráfico en Desmos:"
+                drawingSaved: "Â¡Bosquejo guardado! Â¿QuerÃ©s que lo analice?",
+                drawingToDesmos: "Â¡Bosquejo enviado a Desmos!",
+                graphPrompt: "Haz clic para ver el grÃ¡fico en Desmos:"
             }
         };
 
@@ -752,10 +752,10 @@
                     .replace(/Paso (\d+):/g, '<div class="exercise-step"><strong>Paso $1:</strong>');
 
                 const drawingKeywords = ["bosquejar", "bosqueja"];
-                const graphingKeywords = ["graficar", "gráfica"];
+                const graphingKeywords = ["graficar", "grÃ¡fica"];
                 const requiresDrawing = drawingKeywords.some(keyword => text.toLowerCase().includes(keyword));
                 const requiresGraphing = graphingKeywords.some(keyword => text.toLowerCase().includes(keyword));
-                const noGraphRequired = text.includes("No se requiere gráfica para este ejercicio.");
+                const noGraphRequired = text.includes("No se requiere grÃ¡fica para este ejercicio.");
 
                 messageDiv.innerHTML = processedText;
 
@@ -871,12 +871,12 @@
             controlsDiv.innerHTML = "";
             const downloadButton = document.createElement("button");
             downloadButton.className = "control-button";
-            downloadButton.textContent = "Descargar Gráfico";
+            downloadButton.textContent = "Descargar GrÃ¡fico";
             downloadButton.onclick = () => downloadGraph(container, toolType, messageId);
 
             const clearButton = document.createElement("button");
             clearButton.className = "control-button";
-            clearButton.textContent = "Borrar Gráfico";
+            clearButton.textContent = "Borrar GrÃ¡fico";
             clearButton.onclick = () => clearGraph(container, toolType, messageId);
 
             controlsDiv.appendChild(downloadButton);
@@ -935,7 +935,7 @@
                 const dateString = `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()} ${today.getHours()}:${today.getMinutes().toString().padStart(2, '0')}`;
                 const line = "=".repeat(80);
                 let content = `${line}\n`;
-                content += `${" ".repeat(20)}TizaIA - Conversación Educativa${" ".repeat(20)}\n`;
+                content += `${" ".repeat(20)}TizaIA - ConversaciÃ³n Educativa${" ".repeat(20)}\n`;
                 content += `${" ".repeat(20)}Generado el: ${dateString}${" ".repeat(20)}\n`;
                 content += `${line}\n\n`;
 
@@ -948,7 +948,7 @@
                 });
 
                 content += `\n${line}\n`;
-                content += `${" ".repeat(15)}¡Gracias por usar TizaIA, tu asistente educativo del futuro!${" ".repeat(15)}\n`;
+                content += `${" ".repeat(15)}Â¡Gracias por usar TizaIA, tu asistente educativo del futuro!${" ".repeat(15)}\n`;
                 content += `${" ".repeat(25)}Seguinos en nuestras redes sociales:${" ".repeat(25)}\n`;
                 content += `${" ".repeat(25)}Twitter: @TizaIA_Oficial${" ".repeat(25)}\n`;
                 content += `${" ".repeat(25)}Instagram: @TizaIA_Edu${" ".repeat(25)}\n`;
@@ -958,7 +958,7 @@
                 const fileName = `TizaIA_${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}.txt`;
                 saveAs(blob, fileName);
             } catch (error) {
-                addMessage("¡Uy, loco! Hubo un error al generar el archivo.", "bot");
+                addMessage("Â¡Uy, loco! Hubo un error al generar el archivo.", "bot");
             }
         }
 
@@ -981,7 +981,7 @@
                 if (file.type === "application/pdf") {
                     const text = await extractTextFromPDF(file);
                     addMessage(lang.fileUploaded.replace("${filename}", file.name), "user");
-                    result = { text: `Analizá y resolvé paso a paso este ejercicio extraído de un PDF:\n\n${text}`, image: null };
+                    result = { text: `AnalizÃ¡ y resolvÃ© paso a paso este ejercicio extraÃ­do de un PDF:\n\n${text}`, image: null };
                 } else if (file.type.startsWith("image/")) {
                     const imageUrl = URL.createObjectURL(file);
                     const img = document.createElement("img");
@@ -989,7 +989,7 @@
                     img.classList.add("preview-image");
                     previewContainer.appendChild(img);
                     addMessage(lang.fileUploaded.replace("${filename}", file.name), "user");
-                    result = { text: "Analizá y resolvé paso a paso este ejercicio desde la imagen subida.", image: imageUrl };
+                    result = { text: "AnalizÃ¡ y resolvÃ© paso a paso este ejercicio desde la imagen subida.", image: imageUrl };
                 } else {
                     throw new Error("Formato de archivo no soportado");
                 }
@@ -1002,7 +1002,7 @@
                 return result;
             } catch (error) {
                 showProgress(false);
-                addMessage(`¡Uy, loco! Error al procesar el archivo: ${error.message}`, "bot");
+                addMessage(`Â¡Uy, loco! Error al procesar el archivo: ${error.message}`, "bot");
                 return null;
             } finally {
                 clearInterval(progressInterval);
@@ -1038,7 +1038,7 @@
                 videoContainer.style.display = "block";
                 scrollToBottom();
             } catch (error) {
-                addMessage(`¡Uy, loco! Error con la cámara: ${error.message}`, "bot");
+                addMessage(`Â¡Uy, loco! Error con la cÃ¡mara: ${error.message}`, "bot");
             }
         }
 
@@ -1056,7 +1056,7 @@
                 stopCamera();
                 addMessage(lang.photoTaken, "user");
             } catch (error) {
-                addMessage("¡No pude capturar la foto!", "bot");
+                addMessage("Â¡No pude capturar la foto!", "bot");
             }
         }
 
@@ -1096,7 +1096,7 @@
                 hideDrawingTool();
                 addMessage(lang.drawingSaved, "user");
             } catch (error) {
-                addMessage("¡Uy! No pude guardar el dibujo.", "bot");
+                addMessage("Â¡Uy! No pude guardar el dibujo.", "bot");
             }
         }
 
@@ -1112,7 +1112,7 @@
                 toggleGraph(desmosContainer, initDesmos, ["y=x"], messageId);
                 addMessage(lang.drawingToDesmos, "user");
             } catch (error) {
-                addMessage("¡Uy! No pude enviar el dibujo a Desmos.", "bot");
+                addMessage("Â¡Uy! No pude enviar el dibujo a Desmos.", "bot");
             }
         }
 
@@ -1121,7 +1121,7 @@
                 let messageText = messageInput.value.trim();
                 let finalMessage = { text: messageText, image: null };
                 if (queryCount >= maxQueries) {
-                    addMessage("¡Pará, loco! Llegaste al límite de 5 consultas.", "bot");
+                    addMessage("Â¡ParÃ¡, loco! Llegaste al lÃ­mite de 5 consultas.", "bot");
                     return;
                 }
                 if (!messageText && !fileInput.files.length && !capturedImage && !currentDrawing) return;
@@ -1131,14 +1131,14 @@
                     finalMessage = await processFile(file) || finalMessage;
                     fileInput.value = "";
                 } else if (capturedImage) {
-                    finalMessage = { text: "Analizá y resolvé paso a paso este ejercicio desde la foto capturada.", image: capturedImage };
+                    finalMessage = { text: "AnalizÃ¡ y resolvÃ© paso a paso este ejercicio desde la foto capturada.", image: capturedImage };
                 } else if (currentDrawing) {
-                    finalMessage = { text: "Analizá y resolvé paso a paso este ejercicio desde el bosquejo realizado.", image: currentDrawing };
+                    finalMessage = { text: "AnalizÃ¡ y resolvÃ© paso a paso este ejercicio desde el bosquejo realizado.", image: currentDrawing };
                     currentDrawing = null;
                 }
 
                 if (finalMessage.text || finalMessage.image) {
-                    if (!finalMessage.text.startsWith("Analizá")) addMessage(messageText, "user");
+                    if (!finalMessage.text.startsWith("AnalizÃ¡")) addMessage(messageText, "user");
                     messageInput.value = "";
                     previewContainer.innerHTML = "";
                     capturedImage = null;
@@ -1149,18 +1149,18 @@
                     queryCounter.textContent = `${queryCount}/${maxQueries}`;
                 }
             } catch (error) {
-                addMessage(`¡Qué macana! Error: ${error.message}`, "bot");
+                addMessage(`Â¡QuÃ© macana! Error: ${error.message}`, "bot");
             }
         }
 
         async function getTizaIAResponse(text, image) {
                         const url = `/api/generate`;
             // Construir el historial como contexto
-            let historyContext = "Historial de la conversación:\n";
+            let historyContext = "Historial de la conversaciÃ³n:\n";
             chatHistory.forEach(msg => {
                 historyContext += `${msg.role}: ${msg.content}\n`;
             });
-            const prompt = `Eres TizaIA, un asistente educativo para todas las materias, especializado en matemáticas, física, química e informática. Tienes memoria de las consultas anteriores dentro de las 5 permitidas. Responde de manera clara, didáctica y paso a paso, considerando el contexto del historial. Si la consulta requiere graficar (como "graficar" o "gráfica"), incluye al final "\n\n**Graph Instructions:**" seguido de un JSON con instrucciones para Desmos. Ejemplo: "\n\n**Graph Instructions:** {\"type\": \"graph\", \"tools\": {\"desmos\": [\"y=x^2\"]}}".\n\n${historyContext}\nConsulta actual: "${text}"`;
+            const prompt = `Eres TizaIA, un asistente educativo para todas las materias, especializado en matemÃ¡ticas, fÃ­sica, quÃ­mica e informÃ¡tica. Tienes memoria de las consultas anteriores dentro de las 5 permitidas. Responde de manera clara, didÃ¡ctica y paso a paso, considerando el contexto del historial. Si la consulta requiere graficar (como "graficar" o "grÃ¡fica"), incluye al final "\n\n**Graph Instructions:**" seguido de un JSON con instrucciones para Desmos. Ejemplo: "\n\n**Graph Instructions:** {\"type\": \"graph\", \"tools\": {\"desmos\": [\"y=x^2\"]}}".\n\n${historyContext}\nConsulta actual: "${text}"`;
             let requestBody = { contents: [{ parts: [{ text: prompt }] }] };
 
             if (image) {
@@ -1182,7 +1182,7 @@
                 const data = await response.json();
                 return data.candidates[0].content.parts[0].text;
             } catch (error) {
-                return `¡Uy, loco! Hubo un problema: ${error.message}.`;
+                return `Â¡Uy, loco! Hubo un problema: ${error.message}.`;
             }
         }
 
@@ -1214,7 +1214,7 @@
             desmosDrawingButton.addEventListener("click", drawingToDesmos);
             cancelDrawingButton.addEventListener("click", () => {
                 hideDrawingTool();
-                addMessage("Cancelé el bosquejo, ¿qué más necesitás?", "bot");
+                addMessage("CancelÃ© el bosquejo, Â¿quÃ© mÃ¡s necesitÃ¡s?", "bot");
             });
         }
 
@@ -1238,3 +1238,4 @@
     </script>
 </body>
 </html>
+
